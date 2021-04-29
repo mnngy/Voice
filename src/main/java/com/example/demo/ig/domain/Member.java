@@ -1,19 +1,16 @@
 package com.example.demo.ig.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class Member {
-
-    private Long memberId;
-    private String memberName;
+    private Long memberIdx;
+    private String memberImage;
+    private String memberId;
     private String memberPassword;
-
-    public Member(Long memberId, String memberName, String memberPassword) {
-        this.memberId = memberId;
-        this.memberName = memberName;
-        this.memberPassword = memberPassword;
-    }
+//    private int memberGrade;
 }

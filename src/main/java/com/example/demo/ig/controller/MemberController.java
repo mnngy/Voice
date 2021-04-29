@@ -4,11 +4,8 @@ import com.example.demo.ig.domain.Member;
 import com.example.demo.ig.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.List;
 
 @Controller
 public class MemberController {
@@ -20,16 +17,19 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/member/join")
-    public String newMember(Member member) {
-        memberService.join(member);
-        return "";
+    @GetMapping("/register")
+    public String register() {
+        return "register";
     }
 
-    @GetMapping("/member/all")
-    public String showAllMembers(Model model) {
-        List<Member> members = memberService.findMembers();
-        model.addAttribute("members", members);
-        return "all";
+    @PostMapping("/register")
+    public String registerPost(Member member) {
+        memberService.memberjoin(member);
+        return "/login";
+    }
+
+    @GetMapping("/login")
+    public String login() {
+        return "login";
     }
 }

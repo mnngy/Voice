@@ -6,8 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Repository
 public class MemberRepository {
@@ -19,52 +17,58 @@ public class MemberRepository {
         this.dataSource = dataSource;
     }
 
-    public Member save(Member member) {
-        String sql = "insert into member(memberId, memberName, memberPassword) values(?, ?, ?)";
-
-        Connection conn;
-        PreparedStatement pstmt;
+    /**
+     * 회원가입
+     */
+    public void memberSave(Member member) throws SQLException {
+        String sql = "insert into member(memberId, memberPassword) values(?, ?)";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
 
         try {
             conn = dataSource.getConnection();
             pstmt = conn.prepareStatement(sql);
-            pstmt.setLong(1, member.getMemberId());
-            pstmt.setString(2, member.getMemberName());
-            pstmt.setString(3, member.getMemberPassword());
+            pstmt.setString(1, member.getMemberId());
+            pstmt.setString(2, member.getMemberPassword());
             pstmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            // close
+            if (pstmt != null) {pstmt.close();}
+            if (conn != null) {conn.close();}
         }
-        return member;
     }
 
-    public List<Member> findAll() {
-        String sql = "select * from member";
-
-        List<Member> list = new ArrayList<>();
-
-        Connection conn;
-        Statement stmt;
-        ResultSet rs;
+    /**
+     * 로그인
+     */
+    public void memberSelect(Member member) throws SQLException {
+        String sql = "select memberPassword from member where memberId = ?";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
 
         try {
             conn = dataSource.getConnection();
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery(sql);
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, member.getMemberId());
+            rs = pstmt.executeQuery();
 
-            while (rs.next()) {
-                list.add(new Member(
-                        rs.getLong("memberId"),
-                        rs.getString("memberName"),
-                        rs.getString("memberPassword")));
+            // 아이디 있음
+            if (rs.next()) {
+                if (rs.getString("memberPassword").equals(member.getMemberPassword())) {
+                    // 로그인 성공
+                } else {
+                    // 비밀번호 불일치
+                }
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            // 아이디 불일치
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
-            // close
+            if (rs != null) {rs.close();}
+            if (pstmt != null) {pstmt.close();}
+            if (conn != null) {conn.close();}
         }
-        return list;
     }
 }
