@@ -7,6 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 @Controller
 public class MemberController {
 
@@ -17,7 +20,7 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @GetMapping("/register")
+    @GetMapping("register")
     public String register() {
         return "register";
     }
@@ -31,5 +34,10 @@ public class MemberController {
     @GetMapping("/login")
     public String login() {
         return "login";
+    }
+
+    @PostMapping("login")
+    public void loginPost(HttpServletRequest request, HttpServletResponse response, Member member) {
+        memberService.memberLogin(request, response, member);
     }
 }

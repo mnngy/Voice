@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
 
@@ -41,10 +41,10 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">환영합니다!</h1>
                                     </div>
-                                    <form class="user" id="loginForm" action="/login" method="post">
+                                    <form class="user" id="loginForm" action="login" method="post">
                                         <div class="form-group">
                                             <input type="text" class="form-control form-control-user"
-                                                id="memberId" name="memberId" placeholder="아이디를 입력해주세요...">
+                                                id="memberId" name="memberId" placeholder="아이디를 입력해주세요..." th:value="${memberId}">
                                         </div>
                                         <div class="form-group">
                                             <input type="password" class="form-control form-control-user"
@@ -52,8 +52,8 @@
                                         </div>
                                         <div class="form-group">
                                             <div class="custom-control custom-checkbox small">
-                                                <input type="checkbox" class="custom-control-input" id="customCheck">
-                                                <label class="custom-control-label" for="customCheck">아이디 기억하기</label>
+                                                <input type="checkbox" class="custom-control-input" id="memberIdRemember" name="memberIdRemember" value="memberIdCheck">
+                                                <label class="custom-control-label" for="memberIdRemember">아이디 기억하기</label>
                                             </div>
                                         </div>
                                         <button class="btn btn-primary btn-user btn-block" type="button" onclick="login()">
@@ -62,12 +62,12 @@
                                     </form>
                                     <hr>
                                     <div class="text-center">
-                                        <a class="small" href="/register">회원가입 하기!</a>
+                                        <a class="small" href="register">회원가입 하기!</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>z
+                    </div>
                 </div>
 
             </div>
@@ -99,7 +99,6 @@
                 alert('비밀번호를 입력해주세요.');
                 return;
             }
-            alert('로그인을 성공했습니다!');
             var obj = document.getElementById('loginForm');
             obj.submit();
         }

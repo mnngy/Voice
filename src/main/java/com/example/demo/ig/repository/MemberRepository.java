@@ -42,7 +42,7 @@ public class MemberRepository {
     /**
      * 로그인
      */
-    public void memberSelect(Member member) throws SQLException {
+    public int memberSelect(Member member) throws SQLException {
         String sql = "select memberPassword from member where memberId = ?";
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -54,15 +54,13 @@ public class MemberRepository {
             pstmt.setString(1, member.getMemberId());
             rs = pstmt.executeQuery();
 
-            // 아이디 있음
             if (rs.next()) {
                 if (rs.getString("memberPassword").equals(member.getMemberPassword())) {
-                    // 로그인 성공
+                    return 1; // 로그인 성공
                 } else {
-                    // 비밀번호 불일치
+                    return 0; // 비밀번호 불일치
                 }
             }
-            // 아이디 불일치
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -70,5 +68,6 @@ public class MemberRepository {
             if (pstmt != null) {pstmt.close();}
             if (conn != null) {conn.close();}
         }
+        return -1; // 아이디 불일치
     }
 }
