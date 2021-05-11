@@ -40,6 +40,32 @@ public class MemberRepository {
     }
 
     /**
+     * 아이디 중복 확인
+     */
+    public int memberIdDuplicateCheck(String memberId) throws SQLException {
+        String sql = "select count(*) from member where memberId = ?";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, memberId);
+            rs = pstmt.executeQuery();
+            rs.next();
+            return rs.getInt("count(*)"); // 0: 존재하지 않는 아이디, 1: 중복된 아이디
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {rs.close();}
+            if (pstmt != null) {pstmt.close();}
+            if (conn != null) {conn.close();}
+        }
+        return -1;
+    }
+
+    /**
      * 로그인
      */
     public int memberSelect(Member member) throws SQLException {

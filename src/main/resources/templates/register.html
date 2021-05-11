@@ -41,8 +41,9 @@
                                 </div>
                                 <div class="form-group">
                                     <input type="text" class="form-control form-control-user" id="memberId"
-                                        name="memberId" placeholder="아이디">
+                                        name="memberId" placeholder="아이디" onclick="memberIdOnclick">
                                     <input class="btn btn-primary btn-user" style="margin-top: 12px;" type="button" value="아이디 중복 확인" onclick="memberIdDuplicateCheck()">
+                                    <span id="msg"></span>
                                     <input type="hidden" id="memberIdDuplication" value="memberIdUncheck">
                                     <!-- 아이디 중복 구현 https://all-record.tistory.com/147 -->
                                 </div>
@@ -84,6 +85,52 @@
     <script src="js/sb-admin-2.min.js"></script>
 
     <script type="text/javascript">
+        // 아이디 입력란에 키보드로 값을 입력 시
+        function memberIdOnclick() {
+            document.getElementById('memberIdDuplication').value = "memberIdUncheck";
+        }
+
+        // 아이디 중복 버튼을 눌렀을 때
+        function memberIdDuplicateCheck() {
+            var memberId = document.getElementById("memberId").value;
+
+            // 특수문자, 한글을 체크하는 정규식
+            var checkSpc = /[~!@#$%^&*()_+|<>?:{}]/;
+            var checkKor = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+
+            if (!memberId) {
+                alert('아이디를 입력해주세요.');
+                return;
+            } else if (checkSpc.test(memberId) == true || checkKor.test(memberId) == true) {
+                alert('한글 및 특수문자는 아이디로 사용하실 수 없습니다.');
+                return;
+            } else {
+                // vanilla Javascript로 구현 한 ajax
+                // https://developer.mozilla.org/ko/docs/Web/Guide/AJAX/Getting_Started
+
+                var param = 'memberId=' + memberId;
+                var httpRequest = new XMLHttpRequest();
+                httpRequest.onreadystatechange = function() {
+                    if (httpRequest.readyState === XMLHttpRequest.DONE) {
+                        if (httpRequest.status === 200) {
+                            var resultText = httpRequest.responseText;
+                            if (resultText == 1) {
+                                document.getElementById('msg').innerHTML = '사용할 수 없는 아이디입니다.';
+                            } else {
+                                document.getElementById('msg').innerHTML = '사용 가능한 아아디입니다.';
+                                document.getElementById('memberIdDuplication').value = "memberIdcheck";
+                            }
+                        } else {
+                            alert('request에 뭔가 문제가 있어요.');
+                        }
+                    }
+                };
+                httpRequest.open('POST', 'memberIdCheckAction', true);
+                httpRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                httpRequest.send(param);
+            }
+        }
+
         // 아이디, 비밀번호, 아이디 중복체크를 했는지 확인하고 submit
         function join() {
             var memberId = document.getElementById('memberId').value;
@@ -95,12 +142,10 @@
                 alert('아이디을 입력해주세요.');
                 return;
             }
-            /*
             if (memberIdDuplication == "memberIdUncheck") {
                 alert('아이디 중복 확인을 해주세요.');
                 return;
             }
-             */
             if (memberPassword.length < 1) {
                 alert('비밀번호를 입력해주세요.');
                 return;
@@ -114,6 +159,7 @@
                 return;
             }
             var obj = document.getElementById('signupForm');
+            alert('회원가입을 성공했습니다!');
             obj.submit();
         }
     </script>

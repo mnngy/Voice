@@ -31,6 +31,11 @@ public class MemberController {
         return "login";
     }
 
+    @PostMapping("memberIdCheckAction")
+    public void memberIdCheckAction(HttpServletRequest request, HttpServletResponse response) {
+        memberService.memberIdDuplicateCheck(request, response);
+    }
+
     @GetMapping("login")
     public String login() {
         return "login";

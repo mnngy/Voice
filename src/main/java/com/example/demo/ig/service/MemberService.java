@@ -36,6 +36,30 @@ public class MemberService {
     }
 
     /**
+     * 아이디 중복 확인 서비스
+     */
+    public void memberIdDuplicateCheck(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            String memberId = request.getParameter("memberId");
+            int result = memberRepository.memberIdDuplicateCheck(memberId);
+
+            response.setContentType("text/html;charset=euc-kr");
+            PrintWriter out = response.getWriter();
+
+            if (result == 0) {
+                out.println("0");
+            }
+            else{
+                out.println("1");
+            }
+
+            out.close();
+        } catch (SQLException | IOException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    /**
      * 로그인 서비스
      */
     public void memberLogin(HttpServletRequest request, HttpServletResponse response, Member member) {
