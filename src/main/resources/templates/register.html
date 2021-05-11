@@ -36,7 +36,7 @@
                             <div class="text-center">
                                 <h1 class="h4 text-gray-900 mb-4">회원가입 하기!</h1>
                             </div>
-                            <form class="user" id="signupForm" action="#" method="post">
+                            <form class="user" id="signupForm" action="register" method="post">
                                 <div class="form-group row">
                                 </div>
                                 <div class="form-group">
@@ -84,6 +84,7 @@
     <script src="js/sb-admin-2.min.js"></script>
 
     <script type="text/javascript">
+        // 아이디, 비밀번호, 아이디 중복체크를 했는지 확인하고 submit
         function join() {
             var memberId = document.getElementById('memberId').value;
             var memberPassword = document.getElementById('memberPassword').value;
@@ -112,7 +113,6 @@
                 alert('비밀번호가 일치하지 않습니다.');
                 return;
             }
-            alert('회원가입을 성공했습니다!');
             var obj = document.getElementById('signupForm');
             obj.submit();
         }

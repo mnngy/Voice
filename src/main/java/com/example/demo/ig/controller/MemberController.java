@@ -25,13 +25,13 @@ public class MemberController {
         return "register";
     }
 
-    @PostMapping("/register")
+    @PostMapping("register")
     public String registerPost(Member member) {
         memberService.memberjoin(member);
-        return "/login";
+        return "login";
     }
 
-    @GetMapping("/login")
+    @GetMapping("login")
     public String login() {
         return "login";
     }

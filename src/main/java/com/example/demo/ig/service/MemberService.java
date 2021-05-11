@@ -28,9 +28,6 @@ public class MemberService {
      */
     public void memberjoin(Member member) {
         try {
-            /*
-                중복 아이디 제한 구현
-             */
             memberRepository.memberSave(member);
         } catch (SQLException throwables) {
             // 데이터베이스 오류
