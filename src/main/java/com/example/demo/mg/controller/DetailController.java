@@ -24,7 +24,7 @@ public class DetailController {
     }
 
 
-    @GetMapping("/detail")
+    @GetMapping("detail")
     public String Commentprint(Model model, Comment comment, Board board)
     {
         List<Comment> commentList = null;
@@ -50,7 +50,7 @@ public class DetailController {
         }catch (SQLException throwables){
             throwables.printStackTrace();
         }
-        return "/detail";
+        return "detail";
     }
 
 }
