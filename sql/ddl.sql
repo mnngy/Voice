@@ -15,7 +15,7 @@ create table board
     boardImage varchar(100),
     boardAudio varchar(100) not null,
     memberIdx int not null,
-    boardDate datetime not null,
+    boardDate datetime not null default now(),
     foreign key (memberIdx) references member (memberIdx)
 );
 
@@ -25,7 +25,7 @@ create table board_comment
     commentText varchar(2048),
     memberIdx int not null,
     boardIdx int not null,
-    commentDate datetime not null,
+    commentDate datetime not null default now(),
     foreign key (memberIdx) references member (memberIdx),
     foreign key (boardIdx) references board (boardIdx)
 );
