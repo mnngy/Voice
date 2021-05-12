@@ -1929,7 +1929,7 @@ input, select, textarea {
 	}
 
 		ul.actions li {
-			padding: 0 0 0 1em;
+			padding: 2em 0 0 1em;
 			vertical-align: middle;
 		}
 
@@ -2054,7 +2054,7 @@ input, select, textarea {
 /* Form */
 
 	form {
-		margin: 0 0 2em 0;
+		margin: 0 0 0 0;
 		overflow-x: hidden;
 	}
 
@@ -2072,7 +2072,7 @@ input, select, textarea {
 			-ms-flex-wrap: wrap;
 			flex-wrap: wrap;
 			width: calc(100% + 3em);
-			margin: -1.5em 0 2em -1.5em;
+			margin: -1.5em 0 0 -1.5em;
 		}
 
 			form > .fields > .field {
@@ -2099,6 +2099,9 @@ input, select, textarea {
 				form > .fields > .field.quarter {
 					width: calc(25% - 0.375em);
 				}
+				form > .fields > .field.custom {
+                	width: calc(90% - 0.375em);
+                }
 
 		@media screen and (max-width: 480px) {
 
@@ -2585,6 +2588,17 @@ input, select, textarea {
 			width: calc(33.33333% - 2.5em);
 			margin: 2.5em 0 0 2.5em;
 		}
+		.tiles article.styletest {
+            -moz-transition: -moz-transform 0.5s ease, opacity 0.5s ease;
+            -webkit-transition: -webkit-transform 0.5s ease, opacity 0.5s ease;
+            -ms-transition: -ms-transform 0.5s ease, opacity 0.5s ease;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            position: relative;
+            width: 50%;
+            margin: 0 auto;
+            }
+
+		
 
 			.tiles article > .image {
 				-moz-transition: -moz-transform 0.5s ease;
@@ -2708,6 +2722,10 @@ input, select, textarea {
 			.tiles article.style1 > .image:before {
 				background-color: #f2849e;
 			}
+			.tiles article.styletest > .image:before {
+            	background-color: #f2849e;
+            }
+
 
 			.tiles article.style2 > .image:before {
 				background-color: #7ecaf6;
