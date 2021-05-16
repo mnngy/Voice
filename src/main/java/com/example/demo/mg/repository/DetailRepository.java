@@ -35,7 +35,7 @@ public class DetailRepository {
         try {
             conn = dataSource.getConnection();
             pstmt = conn.prepareStatement(sql);
-            pstmt.setLong(1, 3);
+            pstmt.setLong(1, 1);
             pstmt.setLong(2, 1);
             rs = pstmt.executeQuery();
             while (rs.next()){
@@ -94,24 +94,15 @@ public class DetailRepository {
      * 댓글 입력
      */
     public void setComment(Comment comment) throws SQLException {
-        String sql = "insert into board_commet(commetText, memberIdx, boardIdx, commetDate) values(?, ?, ?, ?)";
+        String sql = "insert into board_comment(commentText, memberIdx, boardIdx) values(?, ?, ?)";
         Connection conn = null;
         PreparedStatement pstmt = null;
-        SimpleDateFormat format = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss", Locale.KOREA);
-       // Date time = new Date();
-        Timestamp ts = localDateTimeToTimeStamp(LocalDateTime.now());
-        //long systemTime = System.currentTimeMillis();
-        String StDate = format.format(ts);
-        //System.out.println(ts);
-        java.sql.Date sqldate = java.sql.Date.valueOf(StDate);
-
         try {
             conn = dataSource.getConnection();
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, comment.getCommentText());
             pstmt.setLong(2, 1);
             pstmt.setLong(3, 1);
-            pstmt.setDate(4, sqldate);
             pstmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -120,8 +111,6 @@ public class DetailRepository {
             if (conn != null) {conn.close();}
         }
     }
-    public static Timestamp localDateTimeToTimeStamp(LocalDateTime ldt) {
-        return Timestamp.valueOf(ldt); // 2018-07-26 01:06:55.323
-    }
+
 
 }

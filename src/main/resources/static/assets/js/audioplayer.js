@@ -4,7 +4,6 @@ let slider = document.querySelector('#duration_slider');
 let track = document.createElement('audio');
 let audio_path = document.querySelector('#audio_path');
 let timer;
-//let audio_path = [[${boardAudio}]];
 
 let Playing_song = false;
 let index_no = 0;
@@ -33,7 +32,6 @@ function load_track(index_no){
 }
 
 load_track(index_no);
-alert(audio_path.textContent);
 function reset_slider(){
     slider.value = 0;
 }
