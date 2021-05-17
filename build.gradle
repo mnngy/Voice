@@ -27,6 +27,8 @@ dependencies {
 	// DB 설정
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	runtimeOnly 'mysql:mysql-connector-java'
+
+	implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.8'
 }
 
 test {
