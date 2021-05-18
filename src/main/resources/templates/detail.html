@@ -167,19 +167,18 @@
 								<div class="test2">
 									<div class="volume">
 										<div class="custom_player">
-											<form method="post" action="#">
 												<p>
 													<div id="board_form">
 														<p th:text="${boardDate}"></p>
-														<input type="button" value="팔로우" class="primary" />
-														<input id="likebutton" type="image" src="images/thumbs_up.jpg" value="like"><span id="like">90</span>
+														<input id="followbutton" type="button" th:value="${follow}" class="primary" onclick="followsend()" />
+												<input id="likebutton" type="image" src="images/thumbs_up.jpg" onclick="likesend()">
+													<span id="like" th:text="${likescore}"></span>
 													</div>
 												</p>
 												<input type="range" min="0"max="100" value="90" onchange="volume_change()" id="volume">
 												<img src="images/volume.jpg" width="30" height="30"/>
 												<span id="volume_show" >90</span>
 												<span id="audio_path" th:text="${boardAudio}"></span>
-											</form>
 										</div>
 									</div>
 									<div class="custom_player">
@@ -200,6 +199,7 @@
 											<input type="text" name="commentText" id="commentText" placeholder="댓글을 입력하세요." />
 										</div>
 										<ul class="actions">
+											<input id="boards" type="hidden" name="boardIdx" th:value="${boardIdx}">
 											<li><input type="submit" text="작성" class="button primary" ></li>
 										</ul>
 									</div>
@@ -270,6 +270,46 @@
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
+			<script>
+				function likesend(){
+					var form = {
+						name: "board",
+						boardIdx: $("#boards").val(),
+
+					}
+					$.ajax({
+						url: "like",
+						type : "POST",
+						data: form,
+						success: function(data){
+							$('#like').text(data);
+						},
+						error: function(){
+							alert("simpleWithObject err");
+						}
+					});
+
+				}
+				function followsend(){
+					var form = {
+						name: "board",
+						boardIdx: $("#boards").val(),
+
+					}
+					$.ajax({
+						url: "follow",
+						type : "POST",
+						data: form,
+						success: function(data){
+							$('#followbutton').val(data);
+						},
+						error: function(){
+							alert("simpleWithObject err");
+						}
+					});
+
+				}
+			</script>
 
 	</body>
 </html>
