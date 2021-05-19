@@ -35,7 +35,7 @@ public class DetailRepository {
         try {
             conn = dataSource.getConnection();
             pstmt = conn.prepareStatement(sql);
-            pstmt.setLong(1, 1);
+            pstmt.setLong(1, board.getBoardIdx());
             pstmt.setLong(2, 1);
             rs = pstmt.executeQuery();
             while (rs.next()){
@@ -62,9 +62,9 @@ public class DetailRepository {
     /**
      * 댓글 출력
      */
-    public List<Comment> Detailcommentselect(Comment comment) throws SQLException{
+    public List<Comment> Detailcommentselect(Board board) throws SQLException{
         //String sql = "select * from board_comment where boardIdx = ?";
-        String sql = "select memberId, commentText, commentDate from board_comment, member where board_comment.memberIdx=? and member.memberIdx=?";
+        String sql = "select memberId, commentText, commentDate from board_comment, member where board_comment.memberIdx=? and member.memberIdx=? and board_comment.boardIdx=?";
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -74,6 +74,7 @@ public class DetailRepository {
             pstmt = conn.prepareStatement(sql);
             pstmt.setLong(1, 1);
             pstmt.setLong(2, 1);
+            pstmt.setLong(3, board.getBoardIdx());
             rs = pstmt.executeQuery();
             while (rs.next()){
                 String memberId = rs.getString(1);
@@ -93,7 +94,7 @@ public class DetailRepository {
     /**
      * 댓글 입력
      */
-    public void setComment(Comment comment) throws SQLException {
+    public void setComment(Comment comment, Board board) throws SQLException {
         String sql = "insert into board_comment(commentText, memberIdx, boardIdx) values(?, ?, ?)";
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -102,7 +103,7 @@ public class DetailRepository {
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, comment.getCommentText());
             pstmt.setLong(2, 1);
-            pstmt.setLong(3, 1);
+            pstmt.setLong(3, board.getBoardIdx());
             pstmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -112,5 +113,141 @@ public class DetailRepository {
         }
     }
 
+    public int serchLike(Board board) throws SQLException{
+
+        String sql = "select count(*) from likes where memberIdx=? and boardIdx=?";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, 1);
+            pstmt.setLong(2, board.getBoardIdx());
+            rs = pstmt.executeQuery();
+            rs.next();
+            return rs.getInt("count(*)"); // 0: 존재하지 않는 아이디, 1: 중복된 아이디
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if (rs != null) {rs.close();}
+            if (pstmt != null) {pstmt.close();}
+            if (conn != null) {conn.close();}
+        }
+
+        return -1;
+    }
+    public void insertLike(Board board) throws SQLException {
+        String sql = "insert into likes(memberIdx,boardIdx) values (?,?)";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, 1);
+            pstmt.setLong(2, board.getBoardIdx());
+            pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) {pstmt.close();}
+            if (conn != null) {conn.close();}
+        }
+    }
+    public void deleteLike(Board board) throws SQLException {
+        String sql = "delete from likes where memberIdx=?";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, 1);
+            pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) {pstmt.close();}
+            if (conn != null) {conn.close();}
+        }
+    }
+    public int countLike(Board board) throws SQLException{
+        String sql = "select count(*) from likes where boardIdx = ?";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, board.getBoardIdx());
+            rs = pstmt.executeQuery();
+            rs.next();
+            return rs.getInt("count(*)"); // 0: 존재하지 않는 아이디, 1: 중복된 아이디
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) {pstmt.close();}
+            if (conn != null) {conn.close();}
+        }
+        return -1;
+    }
+
+    public int serchFollow() throws SQLException{
+
+        String sql = "select count(*) from follow where memberIdxFollower=? and memberIdxFollowing=?";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, 1);    //  로그인 세션
+            pstmt.setLong(2, 2);    //  게시글 작성자
+            rs = pstmt.executeQuery();
+            rs.next();
+            return rs.getInt("count(*)"); // 0: 존재하지 않는 아이디, 1: 중복된 아이디
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if (rs != null) {rs.close();}
+            if (pstmt != null) {pstmt.close();}
+            if (conn != null) {conn.close();}
+        }
+
+        return -1;
+    }
+    public void insertFollow() throws SQLException {
+        String sql = "insert into follow(memberIdxFollower,memberIdxFollowing) values (?,?)";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, 1);    // 로그인 세션
+            pstmt.setLong(2, 2);    // 게시글 작성자
+            pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) {pstmt.close();}
+            if (conn != null) {conn.close();}
+        }
+    }
+    public void deleteFollow() throws SQLException {
+        String sql = "delete from follow where memberIdxFollower = ? and memberIdxFollowing = ?";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, 1);
+            pstmt.setLong(2, 2);
+            pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) {pstmt.close();}
+            if (conn != null) {conn.close();}
+        }
+    }
 
 }

@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class Board {
+    private Long boardIdx;
     private String memberId;
     private String boardImage;
     private String boardAudio;
