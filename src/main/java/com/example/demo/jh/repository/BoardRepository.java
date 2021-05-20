@@ -1,4 +1,4 @@
 package com.example.demo.jh.repository;
 
-public class BoardRepository  {
+public class BoardRepository {
 }
