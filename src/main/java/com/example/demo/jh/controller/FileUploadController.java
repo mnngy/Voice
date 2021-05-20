@@ -16,7 +16,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.stream.Collectors;
 
 @Controller
@@ -60,15 +67,18 @@ public class FileUploadController {
 
 
     @PostMapping("/upload")
-    public String handleFileUpload(@RequestParam("upload") MultipartFile file,@RequestParam("uploadmp3") MultipartFile file2,
-                                   RedirectAttributes redirectAttributes) {
+    public String handleFileUpload(@RequestParam("upload") MultipartFile file, @RequestParam("uploadmp3") MultipartFile file2,
+                                   RedirectAttributes redirectAttributes, HttpServletRequest request) {
+
+
         //업로드 시작
         System.out.println("PostMapping");
 
         String message = "You successfully uploaded " + file.getOriginalFilename() + "!";
         try {
-            storageService.store(file);
-            storageService.store(file2);
+            storageService.store(file,request);
+            storageService.store(file2,request);
+
         } catch (StorageException e) {
             message = "Something happened with file " + file.getOriginalFilename() + ".";
         }

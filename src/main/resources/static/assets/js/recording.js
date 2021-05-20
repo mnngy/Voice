@@ -8,6 +8,8 @@ const mp3Btn = document.querySelector('#mp3-upload');
 const Inputmp3 = document.querySelector('#uploadmp3');
 
 
+
+
 mp3Btn.addEventListener('click',()=>{
 	Inputmp3.click();
 });
@@ -39,8 +41,9 @@ function makeSound(stream) {
 
 }
 
-var i;
-i = 1;
+
+
+
 
 if (navigator.mediaDevices) {
     console.log('getUserMedia supported.')
@@ -81,6 +84,9 @@ if (navigator.mediaDevices) {
             }
 
             mediaRecorder.onstop = e => {
+
+
+
                 console.log("data available after MediaRecorder.stop() called.")
 
                 const clipName = prompt("오디오 파일 제목을 입력하세요.", new Date())
@@ -90,19 +96,9 @@ if (navigator.mediaDevices) {
                 const audio = document.createElement('audio')
                 const deleteButton = document.createElement('button')
 
-
-
-                var radiobox = document.createElement('input');
-                radiobox.type = 'radio';
-                radiobox.id = i;
-                radiobox.value = i;
-                radiobox.name = 'select';
-
-                var label = document.createElement('label')
-                label.htmlFor = radiobox.id;
-
-                var description = document.createTextNode('선택');
-                label.appendChild(description);
+                audio.id = "recordAudio"
+                clipLabel.id = "recordLabel"
+                deleteButton.id = "recordButton"
 
 
                 clipContainer.classList.add('clip')
@@ -113,8 +109,7 @@ if (navigator.mediaDevices) {
 
                 clipContainer.appendChild(audio)
 
-                clipContainer.appendChild(radiobox);
-                clipContainer.appendChild(label);
+
 
 
                 clipContainer.appendChild(clipLabel)
@@ -122,7 +117,8 @@ if (navigator.mediaDevices) {
                 soundClips.appendChild(clipContainer)
 
                 audio.controls = true
-                i++;
+
+
 
                 const blob = new Blob(chunks, {
                     'type': 'audio/ogg codecs=opus'
@@ -130,6 +126,8 @@ if (navigator.mediaDevices) {
                 chunks = []
                 const audioURL = URL.createObjectURL(blob)
                 audio.src = audioURL
+
+
                 console.log("recorder stopped")
 
                 deleteButton.onclick = e => {

@@ -23,7 +23,7 @@ public class uploadController {
     CommandLineRunner init(StorageService storageService) {
         return (args) -> {
             System.out.println("start");
-            storageService.deleteAll();//전부 삭제
+            //storageService.deleteAll();//전부 삭제
             storageService.init();//파일 업로드 세팅
             System.out.println("start end");
         };

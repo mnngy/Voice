@@ -9,6 +9,8 @@ import org.springframework.util.FileSystemUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -32,8 +34,11 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public void store(MultipartFile file) {
+    public void store(MultipartFile file,HttpServletRequest request) {
+        String whoami;
+        whoami=whoAmI(request);
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
+        filename=whoami+filename;
         try {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file " + filename);
@@ -49,8 +54,8 @@ public class FileSystemStorageService implements StorageService {
                         StandardCopyOption.REPLACE_EXISTING);
 
                 ExecutorService executorService = Executors.newSingleThreadExecutor();
-                Future<String> future = executorService.submit(() -> {
-                        makeThumbnail(filename);
+                String finalFilename = filename;
+                Future<String> future = executorService.submit(() -> { makeThumbnail(finalFilename);
                     return "created";
                 });
             }
@@ -62,8 +67,9 @@ public class FileSystemStorageService implements StorageService {
     private void makeThumbnail(String filename) throws IOException {
         // Thumbnail create
         String originPath = this.rootLocation.resolve(filename).toString();
-        String outputPath = this.rootLocation.resolve("th_" + filename).toString();
-        Thumbnails.of(originPath).size(80, 80).toFile(outputPath);
+
+        //String outputPath = this.rootLocation.resolve("th_" + filename).toString();
+        //Thumbnails.of(originPath).size(80, 80).toFile(outputPath);
     }
 
     @Override
@@ -112,5 +118,14 @@ public class FileSystemStorageService implements StorageService {
         } catch (IOException e) {
             throw new StorageException("Could not initialize storage", e);
         }
+    }
+
+    public String whoAmI(HttpServletRequest request){
+
+        String whami;
+        HttpSession session = request.getSession();
+        whami =(String) session.getAttribute("sessionMemberId");
+
+        return whami;
     }
 }
