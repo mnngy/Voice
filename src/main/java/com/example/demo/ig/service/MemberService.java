@@ -12,10 +12,10 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.List;
 
 @Service
 public class MemberService {
-
     private final MemberRepository memberRepository;
 
     @Autowired
@@ -29,9 +29,8 @@ public class MemberService {
     public void memberjoin(Member member) {
         try {
             memberRepository.memberSave(member);
-        } catch (SQLException throwables) {
-            // 데이터베이스 오류
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -52,10 +51,9 @@ public class MemberService {
             else{
                 out.println("1");
             }
-
             out.close();
-        } catch (SQLException | IOException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -73,12 +71,13 @@ public class MemberService {
         }
 
         try {
-            int result = memberRepository.memberSelect(member);
+            int result = memberRepository.memberSelectById(member);
 
             // 로그인 성공
             if (result == 1) {
                 HttpSession session = request.getSession();
                 session.setAttribute("sessionMemberId", member.getMemberId());
+
                 System.out.print(session.getAttribute("sessionMemberId"));
                 System.out.println(" 님이 로그인을 하셨습니다.");
 
@@ -121,5 +120,31 @@ public class MemberService {
         } catch (SQLException | IOException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    /**
+     * 모든 회원 리스트를 가져오는 서비스
+     */
+    public List<Member> findAllMembers() {
+        List<Member> members = null;
+        try {
+            members = memberRepository.memberAllSelect();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return members;
+    }
+
+    /**
+     * 특정 회원을 가져오는 서비스
+     */
+    public Member findMember(String memberId) {
+        Member member = null;
+        try {
+            member = memberRepository.memberSelectById(memberId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return member;
     }
 }
