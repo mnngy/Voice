@@ -55,7 +55,7 @@
 	<!-- Main -->
 	<div id="main">
 		<div class="inner">
-			<h1>업로드</h1>
+			<h1>수정하기</h1>
 
 			<div id='preview' style="height: auto; width: auto;">
 				<!-- 이미지 미리보기 공간 -->
@@ -63,33 +63,33 @@
 
 			<!--음성 녹음-->
 
-				<div>
-					<form id="uu" method="POST" enctype="multipart/form-data" action="/upload">
-						<input type=checkbox id="chk-hear-mic"><label for="chk-hear-mic">마이크 소리 듣기</label>
-						<button id="record" type="button">녹음</button>
-						<button id="stop" type="button">정지</button>
+			<div>
+				<form id="uu" method="POST" enctype="multipart/form-data" action="/updateFile">
+					<input type=checkbox id="chk-hear-mic"><label for="chk-hear-mic">마이크 소리 듣기</label>
+					<button id="record" type="button">녹음</button>
+					<button id="stop" type="button">정지</button>
 
-						<!--이미지 업로드-->
-						<input type='file'  style="display:none" id='upload' name='upload' accept="image/*"/>
-						&emsp;&emsp;&emsp;&emsp;&emsp;이미지 업로드&emsp;<button type="button" class="browse-btn" value="사진업로드">▲</button>
+					<!--이미지 업로드-->
+					<input type='file'  style="display:none" id='upload' name='upload' accept="image/*"/>
+					&emsp;&emsp;&emsp;&emsp;&emsp;이미지 업로드&emsp;<button type="button" class="browse-btn" value="사진업로드">▲</button>
 
-						<!--mp3 업로드-->
-						<input style="display:none" type="file" id="uploadmp3"  name="uploadmp3" accept="audio/*"/>
-						&emsp;&emsp;&emsp;&emsp;&emsp;녹음 파일 업로드&emsp;<button type="button" id="mp3-upload">▲</button>
+					<!--mp3 업로드-->
+					<input style="display:none" type="file" id="uploadmp3"  name="uploadmp3" accept="audio/*"/>
+					&emsp;&emsp;&emsp;&emsp;&emsp;녹음 파일 업로드&emsp;<button type="button" id="mp3-upload">▲</button>
 
-						<audio  id="audio" controls>
-							<source src="" id="src" />
-						</audio>
+					<audio  id="audio" controls>
+						<source src="" id="src" />
+					</audio>
 
-						<h2>음성을 다운 받아 업로드 해주세요</h2>
-						<div id="sound-clips">
+					<h2>음성을 다운 받아 업로드 해주세요</h2>
+					<div id="sound-clips">
 
-						</div>
+					</div>
 
 
-						<input onclick="uu()" type="button" value="업로드" style="float: right;"/>
-					</form>
-				</div>
+					<input onclick="uu()" type="button" value="업로드" style="float: right;"/>
+				</form>
+			</div>
 
 
 

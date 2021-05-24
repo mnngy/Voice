@@ -1,30 +1,24 @@
 package com.example.demo.jh.controller;
 
+import com.example.demo.jh.repository.FileUploadRepository;
 import com.example.demo.jh.storage.StorageException;
 import com.example.demo.jh.storage.StorageFileNotFoundException;
 import com.example.demo.jh.storage.StorageService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.sound.sampled.AudioFileFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.stream.Collectors;
+import java.io.PrintWriter;
+import java.sql.SQLException;
 
 @Controller
 public class FileUploadController {
@@ -33,8 +27,9 @@ public class FileUploadController {
     private final StorageService storageService;
 
     @Autowired
-    public FileUploadController(StorageService storageService) {
+    public FileUploadController(StorageService storageService, FileUploadRepository fileUploadRepository) {
         this.storageService = storageService;
+        this.fileUploadRepository = fileUploadRepository;
         System.out.println("constructor");
     }
 
@@ -65,12 +60,26 @@ public class FileUploadController {
                 "attachment; filename=\"" + file.getFilename() + "\"").body(file);
     }*/
 
+    @Autowired
+    private final FileUploadRepository fileUploadRepository;
+
 
     @PostMapping("/upload")
     public String handleFileUpload(@RequestParam("upload") MultipartFile file, @RequestParam("uploadmp3") MultipartFile file2,
                                    RedirectAttributes redirectAttributes, HttpServletRequest request) {
 
+        /*
+        if(file==null){
 
+            response.setContentType("text/html; charset=UTF-8");
+
+            PrintWriter out = response.getWriter();
+
+            out.println("<script>alert('계정이 등록 되었습니다'); location.href='이동주소';</script>");
+
+            out.flush();
+
+        }*/
         //업로드 시작
         System.out.println("PostMapping");
 
@@ -78,8 +87,10 @@ public class FileUploadController {
         try {
             storageService.store(file,request);
             storageService.store(file2,request);
+            fileUploadRepository.insetUpload(request,file,file2);
 
-        } catch (StorageException e) {
+
+        } catch (StorageException | SQLException e) {
             message = "Something happened with file " + file.getOriginalFilename() + ".";
         }
         redirectAttributes.addFlashAttribute("message", message);
