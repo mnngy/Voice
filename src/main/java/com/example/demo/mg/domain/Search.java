@@ -7,11 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class Board {
-    private Long boardIdx;
+public class Search {
+    private Long memberIdx;
     private String memberId;
-    private String boardImage;
-    private String boardAudio;
-    private String boardDate;
-    private Long likecount;
 }

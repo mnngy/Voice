@@ -155,13 +155,14 @@ public class DetailRepository {
         }
     }
     public void deleteLike(Board board) throws SQLException {
-        String sql = "delete from likes where memberIdx=?";
+        String sql = "delete from likes where memberIdx=? and boardIdx=?";
         Connection conn = null;
         PreparedStatement pstmt = null;
         try {
             conn = dataSource.getConnection();
             pstmt = conn.prepareStatement(sql);
             pstmt.setLong(1, 1);
+            pstmt.setLong(2, board.getBoardIdx());
             pstmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();

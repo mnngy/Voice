@@ -6,7 +6,7 @@
 -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 	<head>
-		<title>Phantom by HTML5 UP</title>
+		<title>너의 목소리가 보여</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
@@ -15,14 +15,24 @@
 	<body class="is-preload">
 		<!-- Wrapper -->
 			<div id="wrapper">
-
 				<!-- Header -->
 					<header id="header">
 						<div class="inner">
-
 							<!-- Logo -->
+							<form method="post" action="search">
+								<div class="row gtr-uniform">
+									<div class="col-10 col-12-xsmall">
+										<input type="text" name="searchtext" value="" placeholder="검색어를 입력해주세요..." />
+									</div>
+									<div class="col-2 col-12-xsmall">
+										<input type="submit" value="검색" class="primary" />
+									</div>
+								</div>
+							</form>
+							</br>
+							</br>
 								<a href="index.html" class="logo">
-									<span class="symbol"><img src="images/logo.svg" alt="" /></span><span class="title">Phantom</span>
+									<span class="symbol"><img src="images/logo.svg" alt="" /></span><span class="title">너의 목소리를 보여줘</span>
 								</a>
 
 							<!-- Nav -->
@@ -36,35 +46,27 @@
 					</header>
 
 				<!-- Menu -->
-					<nav id="menu">
-						<h2>Menu</h2>
-						<ul>
-							<li><a href="index.html">Home</a></li>
-							<li><a href="generic.html">Ipsum veroeros</a></li>
-							<li><a href="generic.html">Tempus etiam</a></li>
-							<li><a href="generic.html">Consequat dolor</a></li>
-							<li><a href="elements.html">Elements</a></li>
-						</ul>
-					</nav>
+					<nav id="menu" th:include="menu.html"></nav>
 
 				<!-- Main -->
 					<div id="main">
 						<div class="inner">
 							<header>
-								<h1>This is Phantom, a free, fully responsive site<br />
-								template designed by <a href="http://html5up.net">HTML5 UP</a>.</h1>
-								<p>Etiam quis viverra lorem, in semper lorem. Sed nisl arcu euismod sit amet nisi euismod sed cursus arcu elementum ipsum arcu vivamus quis venenatis orci lorem ipsum et magna feugiat veroeros aliquam. Lorem ipsum dolor sit amet nullam dolore.</p>
+								<h1>전체 게시판</h1>
 							</header>
 							<section class="tiles">
-								<article class="style1" th:each="board : ${boardList}">
-										<input type="image" src="images/play_icon_2.jpg" width="50" height="50" name="profile"/><span th:text="${board.memberId}"></span>
+								<div class="boardsytle" th:each="board : ${boardList}">
+									<input type="image" src="images/play_icon_2.jpg" width="50" height="50" name="profile"/><span th:text="${board.memberId}"></span>
+									<article class="style1">
 										<span class="image">
-											<img th:src="${board.boardImage}" alt="" />
-										</span>
+												<img th:src="${board.boardImage}" alt="" />
+											</span>
 										<a th:href="@{/detail(boardIdx=${board.boardIdx})}">
 										</a>
-										<input type="image" src="images/thumbs_up.jpg" name="like" onclick="likesend(board.boardIdx)"/><span th:id = "${board.boardIdx}" text = "90"></span>
-								</article>
+									</article>
+									<input th:id="${board.boardIdx}" type="image" src="images/thumbs_up.jpg" name="like" onclick="likesend(this.id)" th:value="${board.boardIdx}"/>
+									<span th:id="count+${board.boardIdx}" th:text="${board.likecount}" ></span>
+								</div>
 							</section>
 						</div>
 					</div>
@@ -121,18 +123,18 @@
 				function likesend(id){
 					var form = {
 						name: "board",
-						boardIdx: $("#boards").val(),
-
+						boardIdxval: $("#"+id).val(),
 					}
 					$.ajax({
-						url: "like",
+						url: "likeList",
 						type : "POST",
-						data: form,
+						data :form,
 						success: function(data){
-							$('#like').text(data);
+							$('#count'+id).text(data);
 						},
 						error: function(){
-							alert("simpleWithObject err");
+							//alert("simpleWithObject err");
+							alert($("#"+id).val());
 						}
 					});
 
