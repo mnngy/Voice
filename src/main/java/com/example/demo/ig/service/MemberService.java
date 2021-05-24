@@ -40,16 +40,17 @@ public class MemberService {
     public void memberIdDuplicateCheck(HttpServletRequest request, HttpServletResponse response) {
         try {
             String memberId = request.getParameter("memberId");
-            int result = memberRepository.memberIdDuplicateCheck(memberId);
+            int result = memberRepository.memberSelectCountById(memberId);
 
             response.setContentType("text/html;charset=euc-kr");
             PrintWriter out = response.getWriter();
 
             if (result == 0) {
                 out.println("0");
-            }
-            else{
+                out.close();
+            } else {
                 out.println("1");
+                out.close();
             }
             out.close();
         } catch (SQLException | IOException e) {
@@ -61,7 +62,6 @@ public class MemberService {
      * 로그인 서비스
      */
     public void memberLogin(HttpServletRequest request, HttpServletResponse response, Member member) {
-
         response.setContentType("text/html;charset=UTF-8");
         String memberIdChk = "memberIdUnCheck";
 
@@ -71,7 +71,7 @@ public class MemberService {
         }
 
         try {
-            int result = memberRepository.memberSelectById(member);
+            int result = memberRepository.memberSelectPasswordById(member);
 
             // 로그인 성공
             if (result == 1) {
@@ -125,7 +125,7 @@ public class MemberService {
     /**
      * 모든 회원 리스트를 가져오는 서비스
      */
-    public List<Member> findAllMembers() {
+    public List<Member> findAllMember() {
         List<Member> members = null;
         try {
             members = memberRepository.memberAllSelect();
@@ -136,7 +136,7 @@ public class MemberService {
     }
 
     /**
-     * 특정 회원을 가져오는 서비스
+     * 특정 회원을 회원 아이디를 통해 가져오는 서비스
      */
     public Member findMember(String memberId) {
         Member member = null;
@@ -146,5 +146,75 @@ public class MemberService {
             e.printStackTrace();
         }
         return member;
+    }
+
+    /**
+     * 특정 회원을 회원 인덱스를 통해 가져오는 서비스
+     */
+    public Member findMember(Long memberIdx) {
+        Member member = null;
+        try {
+            member = memberRepository.memberSelectByIdx(memberIdx);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return member;
+    }
+
+    /**
+     * 특정 회원 정보 수정하는 서비스
+     */
+    public void editMember(Member member, HttpServletResponse response) {
+        PrintWriter out = null;
+        response.setContentType("text/html;charset=euc-kr");
+        int result = 0;
+
+        try {
+            result = memberRepository.memberUpdate(member);
+
+            if (result == 1) {
+                out = response.getWriter();
+                out.println("<script>" +
+                        "alert('회원 정보를 수정했습니다.');" +
+                        "</script>");
+                out.close();
+            } else {
+                out = response.getWriter();
+                out.println("<script>" +
+                        "alert('값을 잘못 입력했습니다.');" +
+                        "</script>");
+                out.close();
+            }
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 특정 회원을 회원 인덱스를 통해 삭제하는 서비스
+     */
+    public void deleteMember(Long memberIdx, HttpServletResponse response) {
+        PrintWriter out = null;
+        response.setContentType("text/html;charset=euc-kr");
+
+        try {
+            int result = memberRepository.memberDeleteByIdx(memberIdx);
+
+            if (result == 1) {
+                out = response.getWriter();
+                out.println("<script>" +
+                        "alert('회원을 삭제했습니다.');" +
+                        "</script>");
+                out.close();
+            } else {
+                out = response.getWriter();
+                out.println("<script>" +
+                        "alert('회원 삭제를 실패했습니다.');" +
+                        "</script>");
+                out.close();
+            }
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
     }
 }

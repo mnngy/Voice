@@ -32,7 +32,6 @@ public class MemberRepository {
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, member.getMemberId());
             pstmt.setString(2, member.getMemberPassword());
-            pstmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -44,7 +43,7 @@ public class MemberRepository {
     /**
      * 아이디 중복 확인
      */
-    public int memberIdDuplicateCheck(String memberId) throws SQLException {
+    public int memberSelectCountById(String memberId) throws SQLException {
         String sql = "select count(*) from member where memberId = ?";
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -70,7 +69,7 @@ public class MemberRepository {
     /**
      * 로그인
      */
-    public int memberSelectById(Member member) throws SQLException {
+    public int memberSelectPasswordById(Member member) throws SQLException {
         String sql = "select memberPassword from member where memberId = ?";
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -100,7 +99,7 @@ public class MemberRepository {
     }
 
     /**
-     * 모든 회원 조회
+     * 모든 회원을 리스트로 반환
      */
     public List<Member> memberAllSelect() throws SQLException {
         String sql = "select * from member";
@@ -137,7 +136,7 @@ public class MemberRepository {
     }
 
     /**
-     * 특정 회원 정보 조회
+     * 특정 회원 정보를 아이디를 통해 조회
      */
     public Member memberSelectById(String memberId) throws SQLException {
         String sql = "select * from member where memberId = ?";
@@ -169,5 +168,92 @@ public class MemberRepository {
             if (conn != null) {conn.close();}
         }
         return member;
+    }
+
+    /**
+     * 특정 회원 정보를 인덱스를 통해 조회
+     */
+    public Member memberSelectByIdx(Long memberIdx) throws SQLException {
+        String sql = "select * from member where memberIdx = ?";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Member member = null;
+
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, memberIdx);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                member = new Member();
+                member.setMemberIdx(rs.getLong("memberIdx"));
+                member.setMemberImage(rs.getString("memberImage"));
+                member.setMemberId(rs.getString("memberId"));
+                member.setMemberPassword(rs.getString("memberPassword"));
+                member.setMemberGrade(rs.getInt("memberGrade"));
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {rs.close();}
+            if (pstmt != null) {pstmt.close();}
+            if (conn != null) {conn.close();}
+        }
+        return member;
+    }
+
+    /**
+     * 특정 회원 정보를 업데이트
+     */
+    public int memberUpdate(Member member) throws SQLException {
+        String sql = "update member set memberImage = ?, memberId = ?, memberPassword = ?, memberGrade = ? where memberIdx = ?";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        int result = 0;
+
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, member.getMemberImage());
+            pstmt.setString(2, member.getMemberId());
+            pstmt.setString(3, member.getMemberPassword());
+            pstmt.setInt(4, member.getMemberGrade());
+            pstmt.setLong(5, member.getMemberIdx());
+            result = pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) {pstmt.close();}
+            if (conn != null) {conn.close();}
+        }
+        return result;
+    }
+
+    /**
+     * 특정 회원 정보를 회원 인덱스를 통해 삭제
+     */
+    public int memberDeleteByIdx(Long memberIdx) throws SQLException {
+        String sql = "update member set memberId = 'delete', memberPassword = 'delete', memberImage = 'delete'" +
+                " where memberIdx = ?";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        int result = 0;
+
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, memberIdx);
+            result = pstmt.executeUpdate();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) {pstmt.close();}
+            if (conn != null) {conn.close();}
+        }
+        return result; // 1일 때 성공
     }
 }

@@ -4,7 +4,7 @@
 	html5up.net | @ajlkn
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 -->
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 	<head>
 		<title>너의목소리를보여줘 - 관리자</title>
 		<meta charset="utf-8" />
@@ -46,6 +46,7 @@
 							<li><a href="../elements.html">Elements</a></li>
 						</ul>
 					</nav>
+
 				<!-- Main -->
 					<div id="main">
 						<div class="inner">
@@ -53,68 +54,34 @@
 
 							<!-- Table -->
 								<section>
-									<h3>전체 회원 목록</h3>
+									<h3>특정 회원 정보 수정</h3>
 									<div class="table-wrapper">
-										<table class="alt">
+										<form action="editMember" method="post">
+										<table>
 											<thead>
 												<tr>
-													<th>회원 인덱스</th>
+													<th>번호</th>
 													<th>아이디</th>
 													<th>비밀번호</th>
 													<th>이미지 경로</th>
 													<th>등급</th>
-													<th></th>
 												</tr>
 											</thead>
 											<tbody>
-												<tr th:each="member : ${members}">
-													<td th:text="${member.memberIdx}"></td>
-													<td th:text="${member.memberId}"></td>
-													<td th:text="${member.memberPassword}"></td>
-													<td th:text="${member.memberImage}"></td>
-													<td th:text="${member.memberGrade}"></td>
-													<td>
-														<a th:href="@{edit(memberIdx=${member.memberIdx})}">수정</a>
-														&nbsp;&nbsp;
-														<a th:href="@{delete(memberIdx=${member.memberIdx})}">삭제</a>
-													</td>
-												</tr>
+											<tr>
+												<td th:text="${member.memberIdx}"></td>
+												<input type="hidden" name="memberIdx" th:value="${member.memberIdx}">
+												<td><input type="text" name="memberId" th:value="${member.memberId}"></td>
+												<td><input type="text" name="memberPassword" th:value="${member.memberPassword}"></td>
+												<td><input type="text" name="memberImage" th:value="${member.memberImage}"></td>
+												<td><input type="text" name="memberGrade" th:value="${member.memberGrade}"></td>
+											</tr>
 											</tbody>
 											<tfoot>
 											</tfoot>
 										</table>
-									</div>
-
-									<h3>전체 게시글 목록</h3>
-									<div class="table-wrapper">
-										<table class="alt">
-											<thead>
-												<tr>
-													<th>게시글 인덱스</th>
-													<th>작성자 인덱스</th>
-													<th>이미지 경로</th>
-													<th>음성 경로</th>
-													<th>작성 날짜</th>
-													<th></th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr th:each="board: ${boards}">
-													<td th:text="${board.boardIdx}"></td>
-													<td th:text="${board.memberIdx}"></td>
-													<td th:text="${board.boardImage}"></td>
-													<td th:text="${board.boardAudio}"></td>
-													<td th:text="${board.boardDate}"></td>
-													<td>
-														<a th:href="@{edit(boardIdx=${board.boardIdx})}">수정</a>
-														&nbsp;&nbsp;
-														<a th:href="@{delete(boardIdx=${board.boardIdx})}">삭제</a>
-													</td>
-												</tr>
-											</tbody>
-											<tfoot>
-											</tfoot>
-										</table>
+											<input type="submit">
+										</form>
 									</div>
 								</section>
 

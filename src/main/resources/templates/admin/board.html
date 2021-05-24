@@ -59,20 +59,26 @@
 										<table>
 											<thead>
 												<tr>
-													<th>번호</th>
+													<th>게시글 인덱스</th>
+													<th>작성자 인덱스</th>
 													<th>이미지 경로</th>
 													<th>음성 경로</th>
-													<th>작성자</th>
 													<th>작성 날짜</th>
+													<th></th>
 												</tr>
 											</thead>
 											<tbody>
 											<tr th:each="board: ${boards}">
 												<td th:text="${board.boardIdx}"></td>
+												<td th:text="${board.memberIdx}"></td>
 												<td th:text="${board.boardImage}"></td>
 												<td th:text="${board.boardAudio}"></td>
-												<td th:text="${board.memberIdx}"></td>
 												<td th:text="${board.boardDate}"></td>
+												<td>
+													<a th:href="@{edit(boardIdx=${board.boardIdx})}">수정</a>
+													&nbsp;&nbsp;
+													<a th:href="@{delete(boardIdx=${board.boardIdx})}">삭제</a>
+												</td>
 											</tr>
 											</tbody>
 											<tfoot>

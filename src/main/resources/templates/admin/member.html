@@ -60,19 +60,25 @@
 											<thead>
 												<tr>
 													<th>번호</th>
-													<th>이미지 경로</th>
 													<th>아이디</th>
 													<th>비밀번호</th>
+													<th>이미지 경로</th>
 													<th>등급</th>
+													<th></th>
 												</tr>
 											</thead>
 											<tbody>
-											<tr>
+											<tr th:if="${member != null}">
 												<td th:text="${member.memberIdx}"></td>
-												<td th:text="${member.memberImage}"></td>
 												<td th:text="${member.memberId}"></td>
 												<td th:text="${member.memberPassword}"></td>
+												<td th:text="${member.memberImage}"></td>
 												<td th:text="${member.memberGrade}"></td>
+												<td>
+													<a th:href="@{edit(memberIdx=${member.memberIdx})}">수정</a>
+													&nbsp;&nbsp;
+													<a th:href="@{delete(memberIdx=${member.memberIdx})}">삭제</a>
+												</td>
 											</tr>
 											</tbody>
 											<tfoot>

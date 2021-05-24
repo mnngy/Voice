@@ -14,5 +14,5 @@ public class Board {
     private String boardImage;
     private String boardAudio;
     private int memberIdx;
-    private Date boardDate;
+    private String boardDate;
 }

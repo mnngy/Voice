@@ -1,6 +1,7 @@
 package com.example.demo.ig.repository;
 
 import com.example.demo.ig.domain.Board;
+import com.example.demo.ig.domain.Member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -45,7 +46,7 @@ public class BoardRepository {
                 board.setBoardImage(rs.getString("boardImage"));
                 board.setBoardAudio(rs.getString("boardAudio"));
                 board.setMemberIdx(rs.getInt("memberIdx"));
-                board.setBoardDate(rs.getDate("boardDate"));
+                board.setBoardDate(rs.getString("boardDate"));
                 boards.add(board);
             }
         }
@@ -62,7 +63,7 @@ public class BoardRepository {
     /**
      * 특정 회원 게시글 조회
      */
-    public List<Board> boardSelectById(Long memberIdx) throws SQLException {
+    public List<Board> boardsSelectById(Long memberIdx) throws SQLException {
         String sql = "select * from board where memberIdx = ?";
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -83,7 +84,7 @@ public class BoardRepository {
                 board.setBoardImage(rs.getString("boardImage"));
                 board.setBoardAudio(rs.getString("boardAudio"));
                 board.setMemberIdx(rs.getInt("memberIdx"));
-                board.setBoardDate(rs.getDate("boardDate"));
+                board.setBoardDate(rs.getString("boardDate"));
                 boards.add(board);
             }
         }
@@ -95,5 +96,87 @@ public class BoardRepository {
             if (conn != null) {conn.close();}
         }
         return boards;
+    }
+
+    /**
+     * 특정 게시글을 게시글 인덱스를 통해 조회
+     */
+    public Board boardSelectById(Long boardIdx) throws SQLException {
+        String sql = "select * from board where boardIdx = ?";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Board board = null;
+
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, boardIdx);
+            rs = pstmt.executeQuery();
+            rs.next();
+            board = new Board();
+            board.setBoardIdx(rs.getLong("boardIdx"));
+            board.setBoardImage(rs.getString("boardImage"));
+            board.setBoardAudio(rs.getString("boardAudio"));
+            board.setMemberIdx(rs.getInt("memberIdx"));
+            board.setBoardDate(rs.getString("boardDate"));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {rs.close();}
+            if (pstmt != null) {pstmt.close();}
+            if (conn != null) {conn.close();}
+        }
+        return board;
+    }
+
+    /**
+     * 특정 게시글을 게시글 인덱스를 통해 삭제
+     */
+    public int boardDeleteByIdx(Long boardIdx) throws SQLException {
+        String sql = "update board set boardImage = 'delete', boardAudio = 'delete' where boardIdx = ?";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        int result = 0;
+
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, boardIdx);
+            result = pstmt.executeUpdate();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) {pstmt.close();}
+            if (conn != null) {conn.close();}
+        }
+        return result;
+    }
+
+    /**
+     * 특정 게시글 정보를 업데이트
+     */
+    public int boardUpdate(Board board) throws SQLException {
+        String sql = "update board set boardAudio = ?, boardImage = ? where boardIdx = ?";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        int result = 0;
+
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, board.getBoardImage());
+            pstmt.setString(2, board.getBoardAudio());
+            pstmt.setLong(3, board.getBoardIdx());
+            result = pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt != null) {pstmt.close();}
+            if (conn != null) {conn.close();}
+        }
+        return result;
     }
 }
