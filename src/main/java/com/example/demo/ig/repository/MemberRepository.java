@@ -32,6 +32,7 @@ public class MemberRepository {
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, member.getMemberId());
             pstmt.setString(2, member.getMemberPassword());
+            pstmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -236,7 +237,7 @@ public class MemberRepository {
      * 특정 회원 정보를 회원 인덱스를 통해 삭제
      */
     public int memberDeleteByIdx(Long memberIdx) throws SQLException {
-        String sql = "update member set memberId = 'delete', memberPassword = 'delete', memberImage = 'delete'" +
+        String sql = "update member set memberId = '✕', memberPassword = '✕', memberImage = '✕'" +
                 " where memberIdx = ?";
         Connection conn = null;
         PreparedStatement pstmt = null;

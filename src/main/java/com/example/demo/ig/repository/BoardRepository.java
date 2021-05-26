@@ -135,7 +135,7 @@ public class BoardRepository {
      * 특정 게시글을 게시글 인덱스를 통해 삭제
      */
     public int boardDeleteByIdx(Long boardIdx) throws SQLException {
-        String sql = "update board set boardImage = 'delete', boardAudio = 'delete' where boardIdx = ?";
+        String sql = "update board set boardImage = '✕', boardAudio = '✕' where boardIdx = ?";
         Connection conn = null;
         PreparedStatement pstmt = null;
         int result = 0;

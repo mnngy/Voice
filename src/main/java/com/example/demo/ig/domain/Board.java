@@ -2,8 +2,6 @@ package com.example.demo.ig.domain;
 
 import lombok.*;
 
-import java.util.Date;
-
 @Getter
 @Setter
 @AllArgsConstructor

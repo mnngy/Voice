@@ -74,13 +74,13 @@ public class BoardService {
             if (result == 1) {
                 out = response.getWriter();
                 out.println("<script>" +
-                        "alert('게시글을 삭제했습니다.');" +
+                        "alert('게시글을 삭제했습니다.'); location.href='/admin';" +
                         "</script>");
                 out.close();
             } else {
                 out = response.getWriter();
                 out.println("<script>" +
-                        "alert('게시글 삭제를 실패했습니다.');" +
+                        "alert('게시글 삭제를 실패했습니다.'); location.href='/admin';" +
                         "</script>");
                 out.close();
             }
@@ -103,13 +103,13 @@ public class BoardService {
             if (result == 1) {
                 out = response.getWriter();
                 out.println("<script>" +
-                        "alert('게시글 정보를 수정했습니다.');" +
+                        "alert('게시글 정보를 수정했습니다.'); location.href='/admin';" +
                         "</script>");
                 out.close();
             } else {
                 out = response.getWriter();
                 out.println("<script>" +
-                        "alert('게시글 정보를 잘못 입력했습니다.');" +
+                        "alert('게시글 정보를 잘못 입력했습니다.'); location.href='/admin';" +
                         "</script>");
                 out.close();
             }

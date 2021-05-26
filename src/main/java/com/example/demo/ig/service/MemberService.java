@@ -63,12 +63,6 @@ public class MemberService {
      */
     public void memberLogin(HttpServletRequest request, HttpServletResponse response, Member member) {
         response.setContentType("text/html;charset=UTF-8");
-        String memberIdChk = "memberIdUnCheck";
-
-        // 아이디 기억하기 버튼을 눌렀는지
-        if (request.getParameter("memberIdRemember") != null) {
-            memberIdChk = request.getParameter("memberIdRemember");
-        }
 
         try {
             int result = memberRepository.memberSelectPasswordById(member);
@@ -83,29 +77,15 @@ public class MemberService {
 
                 PrintWriter out = response.getWriter();
                 out.println("<script>" +
-                        "alert('로그인을 성공했습니다!');" +
+                        "alert('로그인을 성공했습니다!'); location.href='/main';" +
                         "</script>");
                 out.close();
-
-                // 아이디 기억하기 버튼을 눌렀을 때 쿠키 저장
-                if (memberIdChk.equals("memberIdCheck")) {
-                    Cookie cookie = new Cookie("cookieMemberId", member.getMemberId());
-                    cookie.setPath("/");
-                    cookie.setMaxAge(60*60*24*30);
-                    response.addCookie(cookie);
-                    System.out.print(session.getAttribute("sessionMemberId"));
-                    System.out.println(" 님이 쿠키를 생성했습니다. cookieMemberId: " + cookie.getValue());
-                } else {
-                    Cookie cookie = new Cookie("cookieMemberId", null);
-                    cookie.setMaxAge(0);
-                    response.addCookie(cookie);
-                }
 
                 // 비밀번호 불일치
             } else if (result == 0) {
                 PrintWriter out = response.getWriter();
                 out.println("<script>" +
-                        "alert('비밀번호가 일치하지 않습니다.');" +
+                        "alert('비밀번호가 일치하지 않습니다.'); location.href='/';" +
                         "</script>");
                 out.close();
             }
@@ -113,7 +93,7 @@ public class MemberService {
             else {
                 PrintWriter out = response.getWriter();
                 out.println("<script>" +
-                        "alert('아이디가 일치하지 않습니다.');" +
+                        "alert('아이디가 일치하지 않습니다.'); location.href='/';" +
                         "</script>");
                 out.close();
             }
@@ -175,13 +155,13 @@ public class MemberService {
             if (result == 1) {
                 out = response.getWriter();
                 out.println("<script>" +
-                        "alert('회원 정보를 수정했습니다.');" +
+                        "alert('회원 정보를 수정했습니다.'); location.href='/admin';" +
                         "</script>");
                 out.close();
             } else {
                 out = response.getWriter();
                 out.println("<script>" +
-                        "alert('값을 잘못 입력했습니다.');" +
+                        "alert('값을 잘못 입력했습니다.'); location.href='/admin';" +
                         "</script>");
                 out.close();
             }
@@ -203,13 +183,13 @@ public class MemberService {
             if (result == 1) {
                 out = response.getWriter();
                 out.println("<script>" +
-                        "alert('회원을 삭제했습니다.');" +
+                        "alert('회원을 삭제했습니다.'); location.href='/admin';" +
                         "</script>");
                 out.close();
             } else {
                 out = response.getWriter();
                 out.println("<script>" +
-                        "alert('회원 삭제를 실패했습니다.');" +
+                        "alert('회원 삭제를 실패했습니다.'); history.go(-1); location.href='/admin';" +
                         "</script>");
                 out.close();
             }
