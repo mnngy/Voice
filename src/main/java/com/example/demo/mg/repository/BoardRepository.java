@@ -25,9 +25,62 @@ public class BoardRepository {
         this.dataSource = dataSource;
     }
 
+
+
+    public Long MemberIDXselect(String id) throws SQLException {
+        String sql = "select memberIdx from member where memberId = ?";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Long idx = new Long(0);
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, id); // 로그인 세션
+            rs = pstmt.executeQuery();
+            rs.next();
+            idx = rs.getLong("memberIdx");
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if (rs != null) {rs.close();}
+            if (pstmt != null) {pstmt.close();}
+            if (conn != null) {conn.close();}
+        }
+        return idx;
+    }
+
     /**
      * 전체 게시물 출력
      */
+    public List<Board> Followselect(Long idx) throws SQLException{
+        String sql = "select  boardIdx, memberId, boardImage, boardAudio, boardDate  from board, member, follow where board.memberIdx=member.memberIdx and board.memberIdx = memberIdxFollower and memberIdxFollowing = ?;";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        List<Board> boardList= new ArrayList<Board>();
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, idx); // 로그인 세션
+            rs = pstmt.executeQuery();
+            while (rs.next()){
+                Long boardIdx = rs.getLong(1);
+                String memberId = rs.getString(2);
+                String boardImg = rs.getString(3);
+                String boardAudio = rs.getString(4);
+                String boardDate = rs.getString(5);
+                boardList.add(new Board(boardIdx, memberId, boardImg, boardAudio, boardDate, new Long(0)));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if (rs != null) {rs.close();}
+            if (pstmt != null) {pstmt.close();}
+            if (conn != null) {conn.close();}
+        }
+        return boardList;
+    }
     public List<Board> Boardselect() throws SQLException{
         String sql = "select boardIdx, memberId, boardImage, boardAudio, boardDate from board, member where board.memberIdx=member.memberIdx";
         Connection conn = null;
@@ -102,7 +155,7 @@ public class BoardRepository {
         }
         return -1;
     }
-    public int serchLike2(Long boardIdx) throws SQLException{
+    public int serchLike2(Long boardIdx, Long memberIdx) throws SQLException{
 
         String sql = "select count(*) from likes where memberIdx=? and boardIdx=?";
         Connection conn = null;
@@ -111,7 +164,7 @@ public class BoardRepository {
         try {
             conn = dataSource.getConnection();
             pstmt = conn.prepareStatement(sql);
-            pstmt.setLong(1, 1);
+            pstmt.setLong(1, memberIdx);
             pstmt.setLong(2, boardIdx);
             rs = pstmt.executeQuery();
             rs.next();
@@ -126,14 +179,14 @@ public class BoardRepository {
 
         return -1;
     }
-    public void insertLike2(Long boardIdx) throws SQLException {
+    public void insertLike2(Long boardIdx, Long memberIdx) throws SQLException {
         String sql = "insert into likes(memberIdx,boardIdx) values (?,?)";
         Connection conn = null;
         PreparedStatement pstmt = null;
         try {
             conn = dataSource.getConnection();
             pstmt = conn.prepareStatement(sql);
-            pstmt.setLong(1, 1);
+            pstmt.setLong(1, memberIdx);
             pstmt.setLong(2, boardIdx);
             pstmt.executeUpdate();
         } catch (Exception e) {
@@ -143,14 +196,14 @@ public class BoardRepository {
             if (conn != null) {conn.close();}
         }
     }
-    public void deleteLike2(Long boardIdx) throws SQLException {
+    public void deleteLike2(Long boardIdx, Long memberIdx) throws SQLException {
         String sql = "delete from likes where memberIdx=? and boardIdx=?";
         Connection conn = null;
         PreparedStatement pstmt = null;
         try {
             conn = dataSource.getConnection();
             pstmt = conn.prepareStatement(sql);
-            pstmt.setLong(1, 1);
+            pstmt.setLong(1, memberIdx);
             pstmt.setLong(2, boardIdx);
             pstmt.executeUpdate();
         } catch (Exception e) {

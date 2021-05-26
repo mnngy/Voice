@@ -184,7 +184,9 @@
 									<div class="custom_player">
 										<input type="range" min="0"max="100" value="0" id="duration_slider" onchange="change_duration()">
 									</div>
-
+									<div th:if="${writer>0}">
+										<a class="button" href="/main">수정</a>&nbsp;&nbsp;<a class="button" href="/main">삭제</a>
+									</div>
 								</div>
 							</div>
 							<!--

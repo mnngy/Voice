@@ -6,6 +6,7 @@ import com.example.demo.mg.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -24,6 +25,27 @@ public class LikeService {
         List<Like> likeList=null;
         try {
             likeboardList = boardRepository.Boardselect();
+            likeList = boardRepository.serchLikeList();
+            for (int i=0; i<likeboardList.size();i++){
+                for(int j=0; j<likeList.size(); j++){
+                    if(likeboardList.get(i).getBoardIdx()==likeList.get(j).getBoardIdx())
+                        likeboardList.set(i,likeboardList.get(i)).setLikecount(likeList.get(j).getLikecount());
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return likeboardList;
+
+    }
+    public List<Board> LikeFollowBoard(String id){
+        List<Board> likeboardList= null;
+        List<Like> likeList=null;
+
+
+        try {
+            Long idx = boardRepository.MemberIDXselect(id);
+            likeboardList = boardRepository.Followselect(idx);
             likeList = boardRepository.serchLikeList();
             for (int i=0; i<likeboardList.size();i++){
                 for(int j=0; j<likeList.size(); j++){
