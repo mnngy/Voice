@@ -1,7 +1,7 @@
 package com.example.demo.jh.controller;
 
 
-
+import com.example.demo.mg.repository.DetailRepository;
 import com.example.demo.jh.domain.MyPageBoard;
 import com.example.demo.jh.repository.MyPageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +19,11 @@ public class MyPageController {
 
     @Autowired
     private final MyPageRepository myPageRepository;
+    private final DetailRepository detailRepository;
 
-    public MyPageController(MyPageRepository myPageRepository) {
+    public MyPageController(MyPageRepository myPageRepository, DetailRepository detailRepository) {
         this.myPageRepository = myPageRepository;
+        this.detailRepository = detailRepository;
     }
 
 
@@ -75,6 +77,7 @@ public class MyPageController {
         Long count=null;
         Long follower=null;
         Long following=null;
+
         try {
             myPageBoardList = myPageRepository.MyPage(userID);
             String name;
@@ -92,11 +95,30 @@ public class MyPageController {
             model.addAttribute("countBord", count);
             model.addAttribute("follower", follower);
             model.addAttribute("following", following);
+
         }catch (SQLException throwables){
             throwables.printStackTrace();
         }
+        String rs = null;
 
+        Long idx = detailRepository.MemberIDXselect(ID);
+        Long memberidx = detailRepository.BoardIDXselect3(userID);//
+        System.out.println("팔로우 : "+memberidx);
+        int result = detailRepository.serchFollow(idx, memberidx);
+        switch (result){
+            case -1:
+                rs="에러";
+                break;
+            case 0:
+                rs = "팔로우";
+                break;
+            case 1:
+                rs = "팔로우 중";
+                break;
+        }
+        model.addAttribute("follow", rs);
 
         return "ProfilePage";
     }
+
 }

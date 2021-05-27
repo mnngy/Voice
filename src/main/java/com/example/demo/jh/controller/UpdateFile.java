@@ -1,6 +1,7 @@
 package com.example.demo.jh.controller;
 
 import com.example.demo.jh.repository.UpdateFileRepository;
+import com.example.demo.jh.controller.MyPageController;
 import com.example.demo.jh.storage.StorageException;
 import com.example.demo.jh.storage.StorageFileNotFoundException;
 import com.example.demo.jh.storage.StorageService;
@@ -23,23 +24,26 @@ import java.sql.SQLException;
 
 @Controller
 public class UpdateFile {
+    private final MyPageController myPageController;
+    int boardIdx;
     final static Logger logger = LoggerFactory.getLogger(UpdateFile.class);
 
     private final StorageService storageService;
 
 
     @Autowired
-    public UpdateFile(StorageService storageService, UpdateFileRepository updateFileRepository) {
+    public UpdateFile(StorageService storageService, UpdateFileRepository updateFileRepository,MyPageController myPageController) {
         this.storageService = storageService;
         this.updateFileRepository = updateFileRepository;
+        this.myPageController =myPageController;
         System.out.println("constructor");
     }
 
 
 
     @GetMapping("/updateFile")
-    public String listUploadedFiles(Model model) throws IOException {
-
+    public String listUploadedFiles(Model model,int boardIdx) throws IOException {
+        this.boardIdx=boardIdx;
         System.out.println("GetMapping");
 
         return "updateFile";
@@ -63,7 +67,7 @@ public class UpdateFile {
         try {
             storageService.store(file,request);
             storageService.store(file2,request);
-            updateFileRepository.updateUpload(request,file,file2);
+            updateFileRepository.updateUpload(request,file,file2,boardIdx);
 
 
         } catch (StorageException | SQLException e) {
@@ -77,5 +81,13 @@ public class UpdateFile {
     @ExceptionHandler(StorageFileNotFoundException.class)
     public ResponseEntity<?> handleStorageFileNotFound(StorageFileNotFoundException exc) {
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/delete")
+    public String delete(int boardIdx,HttpServletRequest request, Model model) throws SQLException {
+
+        updateFileRepository.deleteFile(boardIdx);
+        myPageController.myPagePrint(request,model);
+        return "myPage";
     }
 }

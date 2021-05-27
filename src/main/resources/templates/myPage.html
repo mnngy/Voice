@@ -55,21 +55,25 @@
 								<h1 th:text="${name}" ></h1><br />
 								<h2> 게시물&emsp;&emsp;&emsp;&emsp;&emsp; 팔로워&emsp;&emsp;&emsp;&emsp;&emsp;팔로잉</h2>
 								<h2 th:text="${'&emsp;'+countBord+'&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;'+follower+'&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; '+following}"></h2>
-
+								<a class="button" href="upload">업로드</a>
 							</header>
 							<section class="tiles">
 
-								<article class="style1" th:each="mypage,index : ${myPageBoardList}">
+								<div class="boardsytle" th:each="mypage,index : ${myPageBoardList}">
 
-										<input type="image" src="images/user.jpg" width="50" height="50" name="profile"/><span th:text="${mypage.memberID}"></span>
-										<span class="image">
-											<img th:src="${mypage.boardImage}" alt="" />
-											<span th:text="${mypage.boardImage}"></span>
-										</span>
-										<a th:href="@{/detail(boardIdx=${mypage.boardIdx})}">
-										</a>
-										<input type="image" src="images/thumbs_up.jpg" name="like" /><span text = "90"></span>
-								</article>
+									<input type="image" src="images/user.jpg" width="50" height="50" name="profile"/><span th:text="${mypage.memberID}"></span>
+									<article class="style1" >
+
+											<span class="image">
+												<img th:src="${mypage.boardImage}" alt="" />
+												<span th:text="${mypage.boardImage}"></span>
+											</span>
+											<a th:href="@{/detail(boardIdx=${mypage.boardIdx})}">
+											</a>
+
+									</article>
+									<input type="image" src="images/thumbs_up.jpg" name="like" /><span text = "90"></span>
+								</div>
 							</section>
 
 						</div>

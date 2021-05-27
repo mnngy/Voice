@@ -23,7 +23,7 @@ public class UpdateFileRepository {
         this.dataSource = dataSource;
     }
 
-    public void updateUpload(HttpServletRequest request, MultipartFile file, MultipartFile file2) throws SQLException{
+    public void updateUpload(HttpServletRequest request, MultipartFile file, MultipartFile file2,int boardIdx) throws SQLException{
 
 
         String whami;
@@ -31,7 +31,7 @@ public class UpdateFileRepository {
         whami =(String) session.getAttribute("sessionMemberId");
 
 
-        String sql = "update board set boardImage=?,boardAudio=? where boardIdx=2;";
+        String sql = "update board set boardImage=?,boardAudio=? where boardIdx=?;";
 
 
         ResultSet rs= null;
@@ -44,6 +44,33 @@ public class UpdateFileRepository {
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, "upload-dir/"+whami+file.getOriginalFilename());
             pstmt.setString(2,"upload-dir/"+whami+file2.getOriginalFilename() );
+            pstmt.setInt(3,boardIdx);
+            pstmt.executeUpdate();
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if (pstmt != null) {pstmt.close();}
+            if (conn != null) {conn.close();}
+            if (rs != null) {rs.close();}
+        }
+
+    }
+
+    public void deleteFile(int boardIdx)throws SQLException{
+        String sql = "delete from board where boardIdx=?;";
+
+
+        ResultSet rs= null;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1,boardIdx);
             pstmt.executeUpdate();
 
 

@@ -112,6 +112,28 @@ public class DetailRepository {
         }
         return idx;
     }
+    public Long BoardIDXselect3(String memberId) throws SQLException {
+        String sql = "select memberIdx from member where memberId=?";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Long idx = new Long(0);
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, memberId); // 로그인 세션
+            rs = pstmt.executeQuery();
+            rs.next();
+            idx = rs.getLong("memberIdx");
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if (rs != null) {rs.close();}
+            if (pstmt != null) {pstmt.close();}
+            if (conn != null) {conn.close();}
+        }
+        return idx;
+    }
     /**
      * 게시물 출력
      */

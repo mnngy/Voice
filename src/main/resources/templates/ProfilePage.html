@@ -52,25 +52,32 @@
 						<div class="inner">
 							<header>
 								<img src="images/user.jpg">
-								<h1 th:text="${name}" ></h1><br />
+								<input id="member" th:value="${name}" type="hidden"></input>
+								<h1 th:text="${name}"></h1><br />
 								<h2> 게시물&emsp;&emsp;&emsp;&emsp;&emsp; 팔로워&emsp;&emsp;&emsp;&emsp;&emsp;팔로잉</h2>
 								<h2 th:text="${'&emsp;'+countBord+'&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;'+follower+'&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; '+following}"></h2>
 
-								<input type="button" value="팔로우"/>
+								<div th:if="${ImFollower>0}">
+
+								</div>
+								<input id="followbutton" type="button"  th:value="${follow}" onclick="followsend()"/>
+
 							</header>
 							<section class="tiles">
+								<div class="boardsytle" th:each="mypage,index : ${myPageBoardList}">
+									<input type="image" src="images/user.jpg" width="50" height="50" name="profile"/><span th:text="${mypage.memberID}"></span>
+									<article class="style1" >
 
-								<article class="style1" th:each="mypage,index : ${myPageBoardList}">
+											<span class="image">
+												<img th:src="${mypage.boardImage}" alt="" />
+												<span th:text="${mypage.boardImage}"></span>
+											</span>
+											<a th:href="@{/detail(boardIdx=${mypage.boardIdx})}">
+											</a>
 
-										<input type="image" src="images/user.jpg" width="50" height="50" name="profile"/><span th:text="${mypage.memberID}"></span>
-										<span class="image">
-											<img th:src="${mypage.boardImage}" alt="" />
-											<span th:text="${mypage.boardImage}"></span>
-										</span>
-										<a th:href="@{/detail(boardIdx=${mypage.boardIdx})}">
-										</a>
-										<input type="image" src="images/thumbs_up.jpg" name="like" /><span text = "90"></span>
-								</article>
+									</article>
+									<input type="image" src="images/thumbs_up.jpg" name="like" /><span text = "90"></span>
+								</div>
 							</section>
 
 						</div>
@@ -118,12 +125,34 @@
 
 			</div>
 
+
 		<!-- Scripts -->
 			<script src="assets/js/jquery.min.js"></script>
 			<script src="assets/js/browser.min.js"></script>
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
+	<script>
+		function followsend(){
+					var form = {
+						name: "board",
+						memberID: $("#member").val(),
+
+					}
+					$.ajax({
+						url: "follow2",
+						type : "POST",
+						data: form,
+						success: function(data){
+							$('#followbutton').val(data);
+						},
+						error: function(){
+							alert("simpleWithObject err");
+						}
+					});
+
+				}
+	</script>
 
 	</body>
 </html>

@@ -119,8 +119,46 @@ public class DetailController {
         String rs="";
         try {
             Long idx = detailRepository.MemberIDXselect(ID);
-            Long boardIdx2 = Long.parseLong(boardIdx);
-            Long memberidx = detailRepository.BoardIDXselect2(boardIdx2);
+            Long boardIdx2 = Long.parseLong(boardIdx);//
+            Long memberidx = detailRepository.BoardIDXselect2(boardIdx2);//
+            System.out.println("팔로우 : "+memberidx);
+            int result = detailRepository.serchFollow(idx, memberidx);
+            switch (result){
+                case -1:
+                    rs="에러";
+                    break;
+                case 0:
+                    detailRepository.insertFollow(idx, memberidx);
+                    rs = "팔로우 중";
+                    break;
+                case 1:
+                    detailRepository.deleteFollow(idx, memberidx);
+                    rs = "팔로우";
+                    break;
+            }
+            model.addAttribute("follow", rs);
+            model.addAttribute("boardIdx", board.getBoardIdx());
+            return rs;
+
+        }catch (SQLException throwables){
+            throwables.printStackTrace();
+        }
+        model.addAttribute("boardIdx", board.getBoardIdx());
+        return rs;
+    }
+
+
+
+    @PostMapping("follow2")
+    @ResponseBody
+    public String followPost2(Model model, Comment comment, Board board, HttpServletRequest request, @RequestParam(value = "memberID", required=false) String memberID) {
+        String ID;
+        HttpSession session = request.getSession();
+        ID =(String) session.getAttribute("sessionMemberId");
+        String rs="";
+        try {
+            Long idx = detailRepository.MemberIDXselect(ID);
+            Long memberidx = detailRepository.BoardIDXselect3(memberID);//
             System.out.println("팔로우 : "+memberidx);
             int result = detailRepository.serchFollow(idx, memberidx);
             switch (result){
