@@ -55,7 +55,7 @@ public class DetailController {
             model.addAttribute("writer", writer);
             if (result==1)
                 follow="팔로우 중";
-            else if(result==2)
+            else if(result==0)
                 follow="팔로우";
             else
                 follow="에러";
