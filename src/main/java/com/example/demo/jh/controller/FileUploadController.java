@@ -13,12 +13,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.stream.Collectors;
 
 @Controller
 public class FileUploadController {
@@ -35,14 +37,14 @@ public class FileUploadController {
 
     @GetMapping("/upload")
     public String listUploadedFiles(Model model) throws IOException {
-    /*
+/*
         model.addAttribute("files", storageService.loadAll().map(
                 path -> MvcUriComponentsBuilder.fromMethodName(FileUploadController.class,
                         "serveFile", path.getFileName().toString()).build().toString())
                 .collect(Collectors.toList()));
-               */
-        //여기는 존재하는 파일을 불러오는 장소
 
+        //여기는 존재하는 파일을 불러오는 장소
+*/
         System.out.println("GetMapping");
 
         return "upload";

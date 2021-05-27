@@ -50,10 +50,10 @@
 							</header>
 							<section class="tiles">
 
-								<div class="boardsytle" th:each="mypage,index : ${myPageBoardList}">
+								<div class="boardsytle"  th:each="mypage,index : ${myPageBoardList}">
 
 									<input type="image" src="images/user.jpg" width="50" height="50" name="profile"/><span th:text="${mypage.memberID}"></span>
-									<article class="style1" >
+									<article  >
 
 											<span class="image">
 												<img th:src="${mypage.boardImage}" alt="" />
@@ -63,7 +63,7 @@
 											</a>
 
 									</article>
-									<input type="image" src="images/thumbs_up.jpg" name="like" /><span text = "90"></span>
+
 								</div>
 							</section>
 
@@ -73,6 +73,9 @@
 				<footer id="footer" th:include="footer.html"></footer>
 
 			</div>
+		<script>
+
+			</script>
 
 		<!-- Scripts -->
 			<script src="assets/js/jquery.min.js"></script>

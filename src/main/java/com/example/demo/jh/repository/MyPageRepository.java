@@ -1,6 +1,7 @@
 package com.example.demo.jh.repository;
 
 import com.example.demo.jh.domain.MyPageBoard;
+import com.example.demo.mg.domain.Like;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -144,6 +145,7 @@ public class MyPageRepository {
 
         return following;
     }
+
 
 
 }

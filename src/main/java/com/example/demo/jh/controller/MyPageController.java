@@ -4,6 +4,7 @@ package com.example.demo.jh.controller;
 import com.example.demo.mg.repository.DetailRepository;
 import com.example.demo.jh.domain.MyPageBoard;
 import com.example.demo.jh.repository.MyPageRepository;
+import com.example.demo.mg.service.LikeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,10 +21,12 @@ public class MyPageController {
     @Autowired
     private final MyPageRepository myPageRepository;
     private final DetailRepository detailRepository;
+    private final LikeService likeService;
 
-    public MyPageController(MyPageRepository myPageRepository, DetailRepository detailRepository) {
+    public MyPageController(MyPageRepository myPageRepository, DetailRepository detailRepository, LikeService likeService) {
         this.myPageRepository = myPageRepository;
         this.detailRepository = detailRepository;
+        this.likeService = likeService;
     }
 
 
@@ -37,16 +40,7 @@ public class MyPageController {
         Long count=null;
         Long follower=null;
         Long following=null;
-        try {
-            myPageBoardList = myPageRepository.MyPage(ID);
-            String name;
-           MyPageBoard myPageBoard = myPageBoardList.get(0);
-           name =myPageBoard.memberID;
-           model.addAttribute("myPageBoardList", myPageBoardList);
-           model.addAttribute("name",name);
-        }catch (SQLException throwables){
-            throwables.printStackTrace();
-        }
+
         try{
             count =myPageRepository.Count(ID);
             follower=myPageRepository.Follower(ID);
@@ -54,6 +48,20 @@ public class MyPageController {
             model.addAttribute("countBord", count);
             model.addAttribute("follower", follower);
             model.addAttribute("following", following);
+        }catch (SQLException throwables){
+            throwables.printStackTrace();
+        }
+        try {
+            myPageBoardList = myPageRepository.MyPage(ID);
+            String name;
+            if(myPageBoardList.isEmpty()){
+                System.out.println("S");
+                return "myPage";
+            }
+            MyPageBoard myPageBoard = myPageBoardList.get(0);
+            name =myPageBoard.memberID;
+            model.addAttribute("myPageBoardList", myPageBoardList);
+            model.addAttribute("name",name);
         }catch (SQLException throwables){
             throwables.printStackTrace();
         }
@@ -78,16 +86,7 @@ public class MyPageController {
         Long follower=null;
         Long following=null;
 
-        try {
-            myPageBoardList = myPageRepository.MyPage(userID);
-            String name;
-            MyPageBoard myPageBoard = myPageBoardList.get(0);
-            name =myPageBoard.memberID;
-            model.addAttribute("myPageBoardList", myPageBoardList);
-            model.addAttribute("name",name);
-        }catch (SQLException throwables){
-            throwables.printStackTrace();
-        }
+
         try{
             count =myPageRepository.Count(userID);
             follower=myPageRepository.Follower(userID);
@@ -117,6 +116,20 @@ public class MyPageController {
                 break;
         }
         model.addAttribute("follow", rs);
+
+        try {
+            myPageBoardList = myPageRepository.MyPage(userID);
+            String name;
+            if(myPageBoardList.isEmpty()){
+                return "ProfilePage";
+            }
+            MyPageBoard myPageBoard = myPageBoardList.get(0);
+            name =myPageBoard.memberID;
+            model.addAttribute("myPageBoardList", myPageBoardList);
+            model.addAttribute("name",name);
+        }catch (SQLException throwables){
+            throwables.printStackTrace();
+        }
 
         return "ProfilePage";
     }
