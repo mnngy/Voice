@@ -82,7 +82,7 @@ public class BoardRepository {
         return boardList;
     }
     public List<Board> Boardselect() throws SQLException{
-        String sql = "select boardIdx, memberId, boardImage, boardAudio, boardDate from board, member where board.memberIdx=member.memberIdx";
+        String sql = "select boardIdx, memberId, boardImage, boardAudio, boardDate from board, member where board.memberIdx=member.memberIdx order by boardIdx desc";
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;

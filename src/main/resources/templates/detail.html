@@ -136,8 +136,10 @@
 							<div class="test">
 								<div class="test2">
 									<div class="profile">
-										<input type="image" src="images/play_icon_2.png" width="50" height="50" value="profile" alt="">
+										<a th:href="@{/ProfilePage(userID=${memberId})}">
+										<input type="image" src="images/user.jpg" width="50" height="50" value="profile" alt="">
 										<span id="writer" th:text="${memberId}"></span>
+										</a>
 									</div>
 								</div>
 							</div>

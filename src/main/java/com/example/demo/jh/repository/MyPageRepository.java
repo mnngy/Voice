@@ -26,7 +26,7 @@ public class MyPageRepository {
      * 내 게시물
      */
     public List<MyPageBoard> MyPage(String ID) throws SQLException {
-        String sql = "select boardAudio, boardImage, boardDate, memberId, boardIdx from member, board where member.memberId=? and board.memberIdx=member.memberIdx";
+        String sql = "select boardAudio, boardImage, boardDate, memberId, boardIdx from member, board where member.memberId=? and board.memberIdx=member.memberIdx order by boardIdx desc";
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
