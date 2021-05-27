@@ -13,24 +13,23 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.stream.Collectors;
 
 @Controller
 public class FileUploadController {
     final static Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
     private final StorageService storageService;
+    private final MyPageController myPageController;
 
     @Autowired
-    public FileUploadController(StorageService storageService, FileUploadRepository fileUploadRepository) {
+    public FileUploadController(StorageService storageService, MyPageController myPageController, FileUploadRepository fileUploadRepository) {
         this.storageService = storageService;
+        this.myPageController = myPageController;
         this.fileUploadRepository = fileUploadRepository;
         System.out.println("constructor");
     }
@@ -68,7 +67,7 @@ public class FileUploadController {
 
     @PostMapping("/upload")
     public String handleFileUpload(@RequestParam("upload") MultipartFile file, @RequestParam("uploadmp3") MultipartFile file2,
-                                   RedirectAttributes redirectAttributes, HttpServletRequest request) {
+                                   RedirectAttributes redirectAttributes, HttpServletRequest request,Model model) throws SQLException {
 
         /*
         if(file==null){
@@ -96,8 +95,8 @@ public class FileUploadController {
             message = "Something happened with file " + file.getOriginalFilename() + ".";
         }
         redirectAttributes.addFlashAttribute("message", message);
-
-        return "upload";
+        myPageController.myPagePrint(request,model);
+        return "myPage";
     }
 
     @ExceptionHandler(StorageFileNotFoundException.class)

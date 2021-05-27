@@ -57,7 +57,7 @@ public class UpdateFile {
 
     @PostMapping("/updateFile")
     public String handleFileUpload(@RequestParam("upload") MultipartFile file, @RequestParam("uploadmp3") MultipartFile file2,
-                                   RedirectAttributes redirectAttributes, HttpServletRequest request) {
+                                   RedirectAttributes redirectAttributes, HttpServletRequest request,Model model) throws SQLException {
 
 
         //업로드 시작
@@ -75,7 +75,8 @@ public class UpdateFile {
         }
         redirectAttributes.addFlashAttribute("message", message);
 
-        return "updateFile";
+        myPageController.myPagePrint(request,model);
+        return "myPage";
     }
 
     @ExceptionHandler(StorageFileNotFoundException.class)
