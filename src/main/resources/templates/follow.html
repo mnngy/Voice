@@ -56,7 +56,7 @@
 							</header>
 							<section class="tiles">
 								<div class="boardsytle" th:each="board : ${boardList}">
-									<input type="image" src="images/play_icon_2.jpg" width="50" height="50" name="profile"/><span th:text="${board.memberId}"></span>
+									<input type="image" src="images/user.jpg" width="50" height="50" name="profile"/><span th:text="${board.memberId}"></span>
 									<article>
 										<span class="image">
 												<img th:src="${board.boardImage}" alt="" />
