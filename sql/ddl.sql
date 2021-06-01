@@ -1,5 +1,7 @@
 create database voice;
 
+use voice;
+
 create table member
 (
     memberIdx       int not null auto_increment primary key,
