@@ -15,9 +15,6 @@ import com.example.demo.jh.storage.StorageService;
 @EnableConfigurationProperties(StorageProperties.class)
 
 public class uploadController {
-    public static void main(String[] args) {
-        SpringApplication.run(uploadController.class, args);
-    }
 
     @Bean
     CommandLineRunner init(StorageService storageService) {
