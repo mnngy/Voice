@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.nio.channels.SeekableByteChannel;
 import java.sql.SQLException;
 import java.util.List;
@@ -26,9 +28,14 @@ public class SearchController {
 
 
     @GetMapping("search")
-    public String searchpage(Model model)
+    public String searchpage(Model model, HttpServletRequest request)
     {
-        return "search";
+        HttpSession session = request.getSession();
+        if (session.getAttribute("sessionMemberId") != null) {
+            return "search";
+        } else {
+            return "login";
+        }
     }
 
     @PostMapping("search")

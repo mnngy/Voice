@@ -35,36 +35,40 @@ public class DetailController {
         HttpSession session = request.getSession();
         ID =(String) session.getAttribute("sessionMemberId");
         List<Comment> commentList = null;
-        try {
-            Long idx = detailRepository.MemberIDXselect(ID);
-            commentList = detailRepository.Detailcommentselect(board);
-            Board board1 = detailRepository.DetailBoardselect(board);
-            Long memberidx = detailRepository.BoardIDXselect(board);
-            int writer = detailRepository.Writerselect(idx, board);
-            System.out.println(memberidx);
-            int count = detailRepository.countLike(board);
-            int result = detailRepository.serchFollow(idx, memberidx);
-            String follow="";
-            model.addAttribute("commentList",commentList);
-            model.addAttribute("boardImage", board1.getBoardImage());
-            model.addAttribute("boardAudio", board1.getBoardAudio());
-            model.addAttribute("memberId",board1.getMemberId());
-            model.addAttribute("boardDate",board1.getBoardDate());
-            model.addAttribute("boardIdx", board1.getBoardIdx());
-            model.addAttribute("likescore", count);
-            model.addAttribute("writer", writer);
-            if (result==1)
-                follow="팔로우 중";
-            else if(result==0)
-                follow="팔로우";
-            else
-                follow="에러";
-            model.addAttribute("follow", follow);
-        }catch (SQLException throwables){
-            throwables.printStackTrace();
-        }
 
-        return "detail";
+        if (session.getAttribute("sessionMemberId") != null) {
+            try {
+                Long idx = detailRepository.MemberIDXselect(ID);
+                commentList = detailRepository.Detailcommentselect(board);
+                Board board1 = detailRepository.DetailBoardselect(board);
+                Long memberidx = detailRepository.BoardIDXselect(board);
+                int writer = detailRepository.Writerselect(idx, board);
+                System.out.println(memberidx);
+                int count = detailRepository.countLike(board);
+                int result = detailRepository.serchFollow(idx, memberidx);
+                String follow="";
+                model.addAttribute("commentList",commentList);
+                model.addAttribute("boardImage", board1.getBoardImage());
+                model.addAttribute("boardAudio", board1.getBoardAudio());
+                model.addAttribute("memberId",board1.getMemberId());
+                model.addAttribute("boardDate",board1.getBoardDate());
+                model.addAttribute("boardIdx", board1.getBoardIdx());
+                model.addAttribute("likescore", count);
+                model.addAttribute("writer", writer);
+                if (result==1)
+                    follow="팔로우 중";
+                else if(result==0)
+                    follow="팔로우";
+                else
+                    follow="에러";
+                model.addAttribute("follow", follow);
+            }catch (SQLException throwables){
+                throwables.printStackTrace();
+            }
+            return "detail";
+        } else {
+            return "login";
+        }
     }
 
     @PostMapping("detail")

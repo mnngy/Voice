@@ -34,104 +34,114 @@ public class MyPageController {
     public String myPagePrint(HttpServletRequest request, Model model) throws SQLException {
 
         String ID;
+
         HttpSession session = request.getSession();
-        ID =(String) session.getAttribute("sessionMemberId");
-        List<MyPageBoard> myPageBoardList = null;
-        Long count=null;
-        Long follower=null;
-        Long following=null;
 
-        try{
-            count =myPageRepository.Count(ID);
-            follower=myPageRepository.Follower(ID);
-            following=myPageRepository.Following(ID);
-            model.addAttribute("countBord", count);
-            model.addAttribute("follower", follower);
-            model.addAttribute("following", following);
-        }catch (SQLException throwables){
-            throwables.printStackTrace();
-        }
-        try {
-            myPageBoardList = myPageRepository.MyPage(ID);
-            String name;
-            if(myPageBoardList.isEmpty()){
-                System.out.println("S");
-                return "myPage";
+        if (session.getAttribute("sessionMemberId") != null) {
+            ID =(String) session.getAttribute("sessionMemberId");
+            List<MyPageBoard> myPageBoardList = null;
+            Long count=null;
+            Long follower=null;
+            Long following=null;
+
+            try{
+                count =myPageRepository.Count(ID);
+                follower=myPageRepository.Follower(ID);
+                following=myPageRepository.Following(ID);
+                model.addAttribute("countBord", count);
+                model.addAttribute("follower", follower);
+                model.addAttribute("following", following);
+            }catch (SQLException throwables){
+                throwables.printStackTrace();
             }
-            MyPageBoard myPageBoard = myPageBoardList.get(0);
-            name =myPageBoard.memberID;
-            model.addAttribute("myPageBoardList", myPageBoardList);
-            model.addAttribute("name",name);
-        }catch (SQLException throwables){
-            throwables.printStackTrace();
+            try {
+                myPageBoardList = myPageRepository.MyPage(ID);
+                String name;
+                if(myPageBoardList.isEmpty()){
+                    System.out.println("S");
+                    return "myPage";
+                }
+                MyPageBoard myPageBoard = myPageBoardList.get(0);
+                name =myPageBoard.memberID;
+                model.addAttribute("myPageBoardList", myPageBoardList);
+                model.addAttribute("name",name);
+            }catch (SQLException throwables){
+                throwables.printStackTrace();
+            }
+            return "myPage";
+        } else {
+            return "login";
         }
-
-
-        return "myPage";
     }
 
     @GetMapping("/ProfilePage")
     public String youPagePrint(HttpServletRequest request, Model model,String userID) throws SQLException {
 
         String ID;
+
         HttpSession session = request.getSession();
-        ID =(String) session.getAttribute("sessionMemberId");
-        if(ID.equals(userID)){
-            System.out.println("ok");
-            myPagePrint(request,model);
-            return "myPage";
-        }
-        List<MyPageBoard> myPageBoardList = null;
-        Long count=null;
-        Long follower=null;
-        Long following=null;
 
-
-        try{
-            count =myPageRepository.Count(userID);
-            follower=myPageRepository.Follower(userID);
-            following=myPageRepository.Following(userID);
-            model.addAttribute("countBord", count);
-            model.addAttribute("follower", follower);
-            model.addAttribute("following", following);
-
-        }catch (SQLException throwables){
-            throwables.printStackTrace();
-        }
-        String rs = null;
-
-        Long idx = detailRepository.MemberIDXselect(ID);
-        Long memberidx = detailRepository.BoardIDXselect3(userID);//
-        System.out.println("팔로우 : "+memberidx);
-        int result = detailRepository.serchFollow(idx, memberidx);
-        switch (result){
-            case -1:
-                rs="에러";
-                break;
-            case 0:
-                rs = "팔로우";
-                break;
-            case 1:
-                rs = "팔로우 중";
-                break;
-        }
-        model.addAttribute("follow", rs);
-
-        try {
-            myPageBoardList = myPageRepository.MyPage(userID);
-            String name;
-            if(myPageBoardList.isEmpty()){
-                return "ProfilePage";
+        if (session.getAttribute("sessionMemberId") != null) {
+            ID =(String) session.getAttribute("sessionMemberId");
+            if(ID.equals(userID)){
+                System.out.println("ok");
+                myPagePrint(request,model);
+                return "myPage";
             }
-            MyPageBoard myPageBoard = myPageBoardList.get(0);
-            name =myPageBoard.memberID;
-            model.addAttribute("myPageBoardList", myPageBoardList);
-            model.addAttribute("name",name);
-        }catch (SQLException throwables){
-            throwables.printStackTrace();
-        }
+            List<MyPageBoard> myPageBoardList = null;
+            Long count=null;
+            Long follower=null;
+            Long following=null;
 
-        return "ProfilePage";
+
+            try{
+                count =myPageRepository.Count(userID);
+                follower=myPageRepository.Follower(userID);
+                following=myPageRepository.Following(userID);
+                model.addAttribute("countBord", count);
+                model.addAttribute("follower", follower);
+                model.addAttribute("following", following);
+
+            }catch (SQLException throwables){
+                throwables.printStackTrace();
+            }
+            String rs = null;
+
+            Long idx = detailRepository.MemberIDXselect(ID);
+            Long memberidx = detailRepository.BoardIDXselect3(userID);//
+            System.out.println("팔로우 : "+memberidx);
+            int result = detailRepository.serchFollow(idx, memberidx);
+            switch (result){
+                case -1:
+                    rs="에러";
+                    break;
+                case 0:
+                    rs = "팔로우";
+                    break;
+                case 1:
+                    rs = "팔로우 중";
+                    break;
+            }
+            model.addAttribute("follow", rs);
+
+            try {
+                myPageBoardList = myPageRepository.MyPage(userID);
+                String name;
+                if(myPageBoardList.isEmpty()){
+                    return "ProfilePage";
+                }
+                MyPageBoard myPageBoard = myPageBoardList.get(0);
+                name =myPageBoard.memberID;
+                model.addAttribute("myPageBoardList", myPageBoardList);
+                model.addAttribute("name",name);
+            }catch (SQLException throwables){
+                throwables.printStackTrace();
+            }
+
+            return "ProfilePage";
+        } else {
+            return "login";
+        }
     }
 
 }

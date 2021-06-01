@@ -1,18 +1,33 @@
 package com.example.demo.ig.controller;
 
+import com.example.demo.mg.domain.Board;
+import com.example.demo.mg.repository.BoardRepository;
+import com.example.demo.mg.service.LikeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 public class HomeController {
 
+    private final BoardRepository boardRepository;
+    private final LikeService likeService;
+
+    @Autowired
+    public HomeController(BoardRepository boardRepository, LikeService likeService) {
+        this.boardRepository = boardRepository;
+        this.likeService = likeService;
+    }
+
     @GetMapping("/")
-    public String home(Model model,
+    public String home(Model model, HttpServletRequest request,
                        @CookieValue(value = "cookieMemberId", required = false) Cookie cookie) {
 
         // "아이디 저장하기"를 했는지 확인
@@ -20,6 +35,17 @@ public class HomeController {
             System.out.println(cookie.getValue() + " 님이 쿠키를 불렀습니다.");
             model.addAttribute("memberId", cookie.getValue());
         }
-        return "login";
+
+        HttpSession session = request.getSession();
+
+        // 세션이 있는지 확인
+        if (session.getAttribute("sessionMemberId") != null) {
+            List<Board> boardList = null;
+            boardList = likeService.LikeBoard();
+            model.addAttribute("boardList", boardList);
+            return "main";
+        } else {
+            return "login";
+        }
     }
 }

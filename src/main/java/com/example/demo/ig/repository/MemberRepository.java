@@ -257,4 +257,32 @@ public class MemberRepository {
         }
         return result; // 1일 때 성공
     }
+
+    /**
+     * 관리자 인지 아닌지 조회
+     */
+    public int memberSelectGradeById(String memberId) throws SQLException {
+        String sql = "select memberGrade from member where memberId = ?";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        int result = 0;
+
+        try {
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, memberId);
+            rs = pstmt.executeQuery();
+            rs.next();
+            result = rs.getInt("memberGrade");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {rs.close();}
+            if (pstmt != null) {pstmt.close();}
+            if (conn != null) {conn.close();}
+        }
+        return result;
+    }
 }

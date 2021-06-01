@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -35,7 +36,7 @@ public class FileUploadController {
     }
 
     @GetMapping("/upload")
-    public String listUploadedFiles(Model model) throws IOException {
+    public String listUploadedFiles(Model model, HttpServletRequest request) throws IOException {
 /*
         model.addAttribute("files", storageService.loadAll().map(
                 path -> MvcUriComponentsBuilder.fromMethodName(FileUploadController.class,
@@ -44,9 +45,14 @@ public class FileUploadController {
 
         //여기는 존재하는 파일을 불러오는 장소
 */
-        System.out.println("GetMapping");
 
-        return "upload";
+        HttpSession session = request.getSession();
+
+        if (session.getAttribute("sessionMemberId") != null) {
+            return "upload";
+        } else {
+            return "login";
+        }
     }
 
     /*

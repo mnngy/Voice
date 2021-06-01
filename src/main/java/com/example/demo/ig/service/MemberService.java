@@ -197,4 +197,19 @@ public class MemberService {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 관리자 인지 아닌지 확인하는 서비스
+     */
+    public int checkAdmin(String memberId) {
+        PrintWriter out = null;
+        int result = 0;
+
+        try {
+            result = memberRepository.memberSelectGradeById(memberId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 }

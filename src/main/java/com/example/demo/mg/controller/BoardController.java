@@ -34,26 +34,39 @@ public class BoardController {
 
 
     @GetMapping("main")
-    public String boardPrint(Model model, Board board)
+    public String boardPrint(Model model, Board board, HttpServletRequest request)
     {
-        List<Board> boardList = null;
-        boardList = likeService.LikeBoard();
-        model.addAttribute("boardList", boardList);
+        HttpSession session = request.getSession();
 
-        return "main";
+        if (session.getAttribute("sessionMemberId") != null) {
+            List<Board> boardList = null;
+            boardList = likeService.LikeBoard();
+            model.addAttribute("boardList", boardList);
+
+            return "main";
+        } else {
+            return "login";
+        }
     }
+
     @GetMapping("follow")
     public String followPrint(Model model, Board board, HttpServletRequest request)
     {
         String ID;
         HttpSession session = request.getSession();
-        ID =(String) session.getAttribute("sessionMemberId");
-        List<Board> boardList = null;
-        boardList = likeService.LikeFollowBoard(ID);
-        model.addAttribute("boardList", boardList);
 
-        return "follow";
+        if (session.getAttribute("sessionMemberId") != null) {
+            ID =(String) session.getAttribute("sessionMemberId");
+            List<Board> boardList = null;
+            boardList = likeService.LikeFollowBoard(ID);
+            model.addAttribute("boardList", boardList);
+
+            return "follow";
+        } else {
+            return "login";
+        }
     }
+
     @PostMapping("likeList")
     @ResponseBody
     public int likePost(Model model, Comment comment, Board board, HttpServletRequest request, @RequestParam(value = "boardIdxval", required=false) String boardIdx) {

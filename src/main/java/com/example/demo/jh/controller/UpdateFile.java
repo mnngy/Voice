@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -42,11 +43,16 @@ public class UpdateFile {
 
 
     @GetMapping("/updateFile")
-    public String listUploadedFiles(Model model,int boardIdx) throws IOException {
-        this.boardIdx=boardIdx;
-        System.out.println("GetMapping");
+    public String listUploadedFiles(Model model,int boardIdx, HttpServletRequest request) throws IOException {
 
-        return "updateFile";
+        HttpSession session = request.getSession();
+
+        if (session.getAttribute("sessionMemberId") != null) {
+            this.boardIdx=boardIdx;
+            return "updateFile";
+        } else {
+            return "login";
+        }
     }
 
 
@@ -87,8 +93,14 @@ public class UpdateFile {
     @GetMapping("/delete")
     public String delete(int boardIdx,HttpServletRequest request, Model model) throws SQLException {
 
-        updateFileRepository.deleteFile(boardIdx);
-        myPageController.myPagePrint(request,model);
-        return "myPage";
+        HttpSession session = request.getSession();
+
+        if (session.getAttribute("sessionMemberId") != null) {
+            updateFileRepository.deleteFile(boardIdx);
+            myPageController.myPagePrint(request,model);
+            return "myPage";
+        } else {
+            return "login";
+        }
     }
 }
