@@ -54,8 +54,8 @@ public class FileUploadRepository {
 
             conn = dataSource.getConnection();
             pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, "http://52.79.237.53:8080/upload-dir/"+whami+file.getOriginalFilename());
-            pstmt.setString(2,"http://52.79.237.53:8080/upload-dir/"+whami+file2.getOriginalFilename() );
+            pstmt.setString(1, "http://52.79.237.53:8080/../resources/main/static/upload-dir/"+whami+file.getOriginalFilename());
+            pstmt.setString(2,"http://52.79.237.53:8080/../resources/main/static/upload-dir/"+whami+file2.getOriginalFilename() );
             pstmt.setLong(3,mIdx);
             pstmt.executeUpdate();
 
