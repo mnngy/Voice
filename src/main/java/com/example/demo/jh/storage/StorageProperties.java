@@ -10,7 +10,7 @@ public class StorageProperties {
      */
     //private String location = "build/resources/main/static/upload-dir";
 
-    private String location = "../resources/main/static/upload-dir";
+    private String location = "src/resources/main/static/upload-dir";
 
 
     public String getLocation() {
