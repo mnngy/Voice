@@ -8,7 +8,9 @@ public class StorageProperties {
     /**
      * Folder location for storing files
      */
-    private String location = "build/resources/main/static/upload-dir";
+    //private String location = "build/resources/main/static/upload-dir";
+
+    private String location = "../resources/main/static/upload-dir";
 
 
     public String getLocation() {
