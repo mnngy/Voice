@@ -54,8 +54,8 @@ public class FileUploadRepository {
 
             conn = dataSource.getConnection();
             pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, "upload-dir/"+whami+file.getOriginalFilename());
-            pstmt.setString(2,"upload-dir/"+whami+file2.getOriginalFilename() );
+            pstmt.setString(1, "/home/ubuntu/app/springboot-aws-ec2/build/resources/main/static/upload-dir/"+whami+file.getOriginalFilename());
+            pstmt.setString(2,"/home/ubuntu/app/springboot-aws-ec2/build/resources/main/static/upload-dir/"+whami+file2.getOriginalFilename() );
             pstmt.setLong(3,mIdx);
             pstmt.executeUpdate();
 
