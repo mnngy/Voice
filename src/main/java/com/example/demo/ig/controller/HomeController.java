@@ -3,6 +3,7 @@ package com.example.demo.ig.controller;
 import com.example.demo.mg.domain.Board;
 import com.example.demo.mg.repository.BoardRepository;
 import com.example.demo.mg.service.LikeService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
+@Slf4j
 @Controller
 public class HomeController {
 
@@ -32,7 +34,7 @@ public class HomeController {
 
         // "아이디 저장하기"를 했는지 확인
         if (cookie != null && !cookie.getValue().equals(null)) {
-            System.out.println(cookie.getValue() + " 님이 쿠키를 불렀습니다.");
+            log.info("{}님이 쿠키를 불렀습니다.", cookie.getValue());
             model.addAttribute("memberId", cookie.getValue());
         }
 

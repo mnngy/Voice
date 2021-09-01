@@ -2,6 +2,7 @@ package com.example.demo.ig.service;
 
 import com.example.demo.ig.domain.Member;
 import com.example.demo.ig.repository.MemberRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 
+@Slf4j
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
@@ -72,8 +74,7 @@ public class MemberService {
                 HttpSession session = request.getSession();
                 session.setAttribute("sessionMemberId", member.getMemberId());
 
-                System.out.print(session.getAttribute("sessionMemberId"));
-                System.out.println(" 님이 로그인을 하셨습니다.");
+                log.info("{}님이 로그인을 하셨습니다.", session.getAttribute("sessionMemberId"));
 
                 PrintWriter out = response.getWriter();
                 out.println("<script>" +
