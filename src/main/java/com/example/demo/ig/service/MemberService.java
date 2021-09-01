@@ -2,6 +2,7 @@ package com.example.demo.ig.service;
 
 import com.example.demo.ig.domain.Member;
 import com.example.demo.ig.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,15 +16,12 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 
-@Slf4j
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class MemberService {
-    private final MemberRepository memberRepository;
 
-    @Autowired
-    public MemberService(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
-    }
+    private final MemberRepository memberRepository;
 
     /**
      * 회원가입 서비스

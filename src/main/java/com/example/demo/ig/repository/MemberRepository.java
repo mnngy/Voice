@@ -1,6 +1,7 @@
 package com.example.demo.ig.repository;
 
 import com.example.demo.ig.domain.Member;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -10,14 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class MemberRepository {
 
     private final DataSource dataSource;
-
-    @Autowired
-    public MemberRepository(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
 
     /**
      * 회원가입

@@ -2,6 +2,7 @@ package com.example.demo.ig.controller;
 
 import com.example.demo.ig.domain.Member;
 import com.example.demo.ig.service.MemberService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,14 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @Controller
+@RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
-
-    @Autowired
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
 
     @GetMapping("register")
     public String register() {

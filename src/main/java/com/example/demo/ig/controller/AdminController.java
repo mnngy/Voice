@@ -4,6 +4,7 @@ import com.example.demo.ig.domain.Board;
 import com.example.demo.ig.domain.Member;
 import com.example.demo.ig.service.BoardService;
 import com.example.demo.ig.service.MemberService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,16 +17,11 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 public class AdminController {
 
     private final MemberService memberService;
     private final BoardService boardService;
-
-    @Autowired
-    public AdminController(MemberService memberService, BoardService boardService) {
-        this.memberService = memberService;
-        this.boardService = boardService;
-    }
 
     @GetMapping("admin")
     public String Home(HttpServletRequest request) {

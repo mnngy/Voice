@@ -3,6 +3,7 @@ package com.example.demo.ig.service;
 import com.example.demo.ig.domain.Board;
 import com.example.demo.ig.domain.Member;
 import com.example.demo.ig.repository.BoardRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,14 +14,10 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Service("ig.BoardService")
+@RequiredArgsConstructor
 public class BoardService {
 
     private final BoardRepository boardRepository;
-
-    @Autowired
-    public BoardService(BoardRepository boardRepository) {
-        this.boardRepository = boardRepository;
-    }
 
     /**
      * 모든 게시글 리스트를 반환하는 서비스

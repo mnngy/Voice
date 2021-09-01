@@ -3,6 +3,7 @@ package com.example.demo.ig.controller;
 import com.example.demo.mg.domain.Board;
 import com.example.demo.mg.repository.BoardRepository;
 import com.example.demo.mg.service.LikeService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,18 +16,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
-@Slf4j
 @Controller
+@RequiredArgsConstructor
+@Slf4j
 public class HomeController {
 
-    private final BoardRepository boardRepository;
     private final LikeService likeService;
-
-    @Autowired
-    public HomeController(BoardRepository boardRepository, LikeService likeService) {
-        this.boardRepository = boardRepository;
-        this.likeService = likeService;
-    }
 
     @GetMapping("/")
     public String home(Model model, HttpServletRequest request,
@@ -42,8 +37,7 @@ public class HomeController {
 
         // 세션이 있는지 확인
         if (session.getAttribute("sessionMemberId") != null) {
-            List<Board> boardList = null;
-            boardList = likeService.LikeBoard();
+            List<Board> boardList= likeService.LikeBoard();
             model.addAttribute("boardList", boardList);
             return "main";
         } else {
