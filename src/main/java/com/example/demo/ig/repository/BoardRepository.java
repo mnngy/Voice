@@ -3,6 +3,7 @@ package com.example.demo.ig.repository;
 import com.example.demo.ig.domain.Board;
 import com.example.demo.ig.domain.Member;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -16,6 +17,7 @@ import java.util.List;
 
 @Repository("ig.BoardRepository")
 @RequiredArgsConstructor
+@Slf4j
 public class BoardRepository {
 
     private final DataSource dataSource;
@@ -48,7 +50,7 @@ public class BoardRepository {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+            log.error(this.getClass().getName() + "." + "boardSelectAll" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         } finally {
             if (rs != null) {rs.close();}
             if (pstmt != null) {pstmt.close();}
@@ -86,7 +88,7 @@ public class BoardRepository {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+            log.error(this.getClass().getName() + "." + "boardsSelectById" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         } finally {
             if (rs != null) {rs.close();}
             if (pstmt != null) {pstmt.close();}
@@ -118,8 +120,8 @@ public class BoardRepository {
             board.setMemberIdx(rs.getInt("memberIdx"));
             board.setBoardDate(rs.getString("boardDate"));
         }
-        catch (Exception e) {
-            e.printStackTrace();
+        catch (SQLException e) {
+            log.error(this.getClass().getName() + "." + "boardSelectById" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         } finally {
             if (rs != null) {rs.close();}
             if (pstmt != null) {pstmt.close();}
@@ -143,8 +145,8 @@ public class BoardRepository {
             pstmt.setLong(1, boardIdx);
             result = pstmt.executeUpdate();
         }
-        catch (Exception e) {
-            e.printStackTrace();
+        catch (SQLException e) {
+            log.error(this.getClass().getName() + "." + "boardDeleteByIdx" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         } finally {
             if (pstmt != null) {pstmt.close();}
             if (conn != null) {conn.close();}
@@ -168,8 +170,8 @@ public class BoardRepository {
             pstmt.setString(2, board.getBoardAudio());
             pstmt.setLong(3, board.getBoardIdx());
             result = pstmt.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            log.error(this.getClass().getName() + "." + "boardUpdate" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         } finally {
             if (pstmt != null) {pstmt.close();}
             if (conn != null) {conn.close();}

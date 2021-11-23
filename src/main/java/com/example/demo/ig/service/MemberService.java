@@ -26,11 +26,11 @@ public class MemberService {
     /**
      * 회원가입 서비스
      */
-    public void memberjoin(Member member) {
+    public void memberJoin(Member member) {
         try {
             memberRepository.memberSave(member);
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error(this.getClass().getName() + "." + "memberJoin" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         }
     }
 
@@ -54,7 +54,7 @@ public class MemberService {
             }
             out.close();
         } catch (SQLException | IOException e) {
-            e.printStackTrace();
+            log.error(this.getClass().getName() + "." + "memberIdDuplicateCheck" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         }
     }
 
@@ -96,8 +96,8 @@ public class MemberService {
                         "</script>");
                 out.close();
             }
-        } catch (SQLException | IOException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException | IOException e) {
+            log.error(this.getClass().getName() + "." + "memberLogin" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         }
     }
 
@@ -109,7 +109,7 @@ public class MemberService {
         try {
             members = memberRepository.memberAllSelect();
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error(this.getClass().getName() + "." + "findAllMember" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         }
         return members;
     }
@@ -122,7 +122,7 @@ public class MemberService {
         try {
             member = memberRepository.memberSelectById(memberId);
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error(this.getClass().getName() + "." + "findMember(String memberId)" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         }
         return member;
     }
@@ -135,7 +135,7 @@ public class MemberService {
         try {
             member = memberRepository.memberSelectByIdx(memberIdx);
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error(this.getClass().getName() + "." + "findMember(Long memberIdx)" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         }
         return member;
     }
@@ -165,7 +165,7 @@ public class MemberService {
                 out.close();
             }
         } catch (SQLException | IOException e) {
-            e.printStackTrace();
+            log.error(this.getClass().getName() + "." + "editMember" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         }
     }
 
@@ -193,7 +193,7 @@ public class MemberService {
                 out.close();
             }
         } catch (SQLException | IOException e) {
-            e.printStackTrace();
+            log.error(this.getClass().getName() + "." + "deleteMember" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         }
     }
 
@@ -207,7 +207,7 @@ public class MemberService {
         try {
             result = memberRepository.memberSelectGradeById(memberId);
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error(this.getClass().getName() + "." + "checkAdmin" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         }
         return result;
     }

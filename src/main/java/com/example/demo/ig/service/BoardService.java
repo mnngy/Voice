@@ -4,6 +4,7 @@ import com.example.demo.ig.domain.Board;
 import com.example.demo.ig.domain.Member;
 import com.example.demo.ig.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.util.List;
 
 @Service("ig.BoardService")
 @RequiredArgsConstructor
+@Slf4j
 public class BoardService {
 
     private final BoardRepository boardRepository;
@@ -27,7 +29,7 @@ public class BoardService {
         try {
             boards = boardRepository.boardSelectAll();
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error(this.getClass().getName() + "." + "findAllBoard" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         }
         return boards;
     }
@@ -40,7 +42,7 @@ public class BoardService {
         try {
             boards = boardRepository.boardsSelectById(memberIdx);
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error(this.getClass().getName() + "." + "findBoards" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         }
         return boards;
     }
@@ -53,7 +55,7 @@ public class BoardService {
         try {
             board = boardRepository.boardSelectById(boardIdx);
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error(this.getClass().getName() + "." + "findBoard" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         }
         return board;
     }
@@ -82,7 +84,7 @@ public class BoardService {
                 out.close();
             }
         } catch (SQLException | IOException e) {
-            e.printStackTrace();
+            log.error(this.getClass().getName() + "." + "deleteBoard" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         }
     }
 
@@ -111,7 +113,7 @@ public class BoardService {
                 out.close();
             }
         } catch (SQLException | IOException e) {
-            e.printStackTrace();
+            log.error(this.getClass().getName() + "." + "editBoard" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         }
     }
 }

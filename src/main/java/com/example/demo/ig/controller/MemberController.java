@@ -3,7 +3,6 @@ package com.example.demo.ig.controller;
 import com.example.demo.ig.domain.Member;
 import com.example.demo.ig.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,7 +25,7 @@ public class MemberController {
 
     @PostMapping("register")
     public String registerPost(Member member) {
-        memberService.memberjoin(member);
+        memberService.memberJoin(member);
         return "redirect:/";
     }
 

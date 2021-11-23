@@ -2,6 +2,7 @@ package com.example.demo.ig.repository;
 
 import com.example.demo.ig.domain.Member;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class MemberRepository {
 
     private final DataSource dataSource;
@@ -31,7 +33,7 @@ public class MemberRepository {
             pstmt.setString(2, member.getMemberPassword());
             pstmt.executeUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(this.getClass().getName() + "." + "memberSave" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         } finally {
             if (pstmt != null) {pstmt.close();}
             if (conn != null) {conn.close();}
@@ -54,8 +56,8 @@ public class MemberRepository {
             rs = pstmt.executeQuery();
             rs.next();
             return rs.getInt("count(*)"); // 0: 존재하지 않는 아이디, 1: 중복된 아이디
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLSyntaxErrorException e) {
+            log.error(this.getClass().getName() + "." + "memberSelectCountById" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         } finally {
             if (rs != null) {rs.close();}
             if (pstmt != null) {pstmt.close();}
@@ -87,7 +89,7 @@ public class MemberRepository {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(this.getClass().getName() + "." + "memberSelectPasswordById" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         } finally {
             if (rs != null) {rs.close();}
             if (pstmt != null) {pstmt.close();}
@@ -124,7 +126,7 @@ public class MemberRepository {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+            log.error(this.getClass().getName() + "." + "memberAllSelect" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         } finally {
             if (rs != null) {rs.close();}
             if (pstmt != null) {pstmt.close();}
@@ -159,7 +161,7 @@ public class MemberRepository {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+            log.error(this.getClass().getName() + "." + "memberSelectById" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         } finally {
             if (rs != null) {rs.close();}
             if (pstmt != null) {pstmt.close();}
@@ -194,7 +196,7 @@ public class MemberRepository {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+            log.error(this.getClass().getName() + "." + "memberSelectByIdx" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         } finally {
             if (rs != null) {rs.close();}
             if (pstmt != null) {pstmt.close();}
@@ -222,7 +224,7 @@ public class MemberRepository {
             pstmt.setLong(5, member.getMemberIdx());
             result = pstmt.executeUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(this.getClass().getName() + "." + "memberUpdate" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         } finally {
             if (pstmt != null) {pstmt.close();}
             if (conn != null) {conn.close();}
@@ -247,7 +249,7 @@ public class MemberRepository {
             result = pstmt.executeUpdate();
         }
         catch (Exception e) {
-            e.printStackTrace();
+            log.error(this.getClass().getName() + "." + "memberDeleteByIdx" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         } finally {
             if (pstmt != null) {pstmt.close();}
             if (conn != null) {conn.close();}
@@ -274,7 +276,7 @@ public class MemberRepository {
             result = rs.getInt("memberGrade");
         }
         catch (Exception e) {
-            e.printStackTrace();
+            log.error(this.getClass().getName() + "." + "memberSelectGradeById" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         } finally {
             if (rs != null) {rs.close();}
             if (pstmt != null) {pstmt.close();}
