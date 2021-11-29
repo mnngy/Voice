@@ -5,6 +5,7 @@ import com.example.demo.ig.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
@@ -27,11 +28,8 @@ public class MemberService {
      * 회원가입 서비스
      */
     public void memberJoin(Member member) {
-        try {
-            memberRepository.memberSave(member);
-        } catch (SQLException e) {
-            log.error(this.getClass().getName() + "." + "memberJoin" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
-        }
+        memberRepository.insertMember(member);
+        log.info("{} 님이 회원가입을 하셨습니다.", member.getMemberId());
     }
 
     /**
@@ -88,16 +86,17 @@ public class MemberService {
                         "</script>");
                 out.close();
             }
-            // 아이디 불일치
-            else {
-                PrintWriter out = response.getWriter();
-                out.println("<script>" +
-                        "alert('아이디가 일치하지 않습니다.'); location.href='/';" +
-                        "</script>");
-                out.close();
-            }
-        } catch (SQLException | IOException e) {
+        } catch (EmptyResultDataAccessException | IOException e) {
             log.error(this.getClass().getName() + "." + "memberLogin" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
+            PrintWriter out = null;
+            try {
+                out = response.getWriter();
+            } catch (IOException ex) {
+                log.error(this.getClass().getName() + "." + "memberLogin" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
+            }
+            out.println("<script>" +
+                    "alert('아이디가 일치하지 않습니다.'); location.href='/';" +
+                    "</script>");
         }
     }
 
@@ -118,13 +117,7 @@ public class MemberService {
      * 특정 회원을 회원 아이디를 통해 가져오는 서비스
      */
     public Member findMember(String memberId) {
-        Member member = null;
-        try {
-            member = memberRepository.memberSelectById(memberId);
-        } catch (SQLException e) {
-            log.error(this.getClass().getName() + "." + "findMember(String memberId)" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
-        }
-        return member;
+        return memberRepository.memberSelectById(memberId);
     }
 
     /**
@@ -164,7 +157,7 @@ public class MemberService {
                         "</script>");
                 out.close();
             }
-        } catch (SQLException | IOException e) {
+        } catch (IOException e) {
             log.error(this.getClass().getName() + "." + "editMember" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         }
     }

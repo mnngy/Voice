@@ -3,6 +3,7 @@ package com.example.demo.ig.controller;
 import com.example.demo.ig.domain.Member;
 import com.example.demo.ig.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

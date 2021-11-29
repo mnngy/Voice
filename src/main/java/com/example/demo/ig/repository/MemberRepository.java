@@ -3,12 +3,11 @@ package com.example.demo.ig.repository;
 import com.example.demo.ig.domain.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -16,272 +15,82 @@ import java.util.List;
 @Slf4j
 public class MemberRepository {
 
-    private final DataSource dataSource;
+    private final JdbcTemplate jdbcTemplate;
 
-    /**
-     * 회원가입
-     */
-    public void memberSave(Member member) throws SQLException {
+    public void insertMember(Member member) {
         String sql = "insert into member(memberId, memberPassword) values(?, ?)";
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-
-        try {
-            conn = dataSource.getConnection();
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, member.getMemberId());
-            pstmt.setString(2, member.getMemberPassword());
-            pstmt.executeUpdate();
-        } catch (Exception e) {
-            log.error(this.getClass().getName() + "." + "memberSave" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
-        } finally {
-            if (pstmt != null) {pstmt.close();}
-            if (conn != null) {conn.close();}
-        }
+        jdbcTemplate.update(sql, member.getMemberId(), member.getMemberPassword());
     }
 
-    /**
-     * 아이디 중복 확인
-     */
     public int memberSelectCountById(String memberId) throws SQLException {
         String sql = "select count(*) from member where memberId = ?";
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-
-        try {
-            conn = dataSource.getConnection();
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, memberId);
-            rs = pstmt.executeQuery();
-            rs.next();
-            return rs.getInt("count(*)"); // 0: 존재하지 않는 아이디, 1: 중복된 아이디
-        } catch (SQLSyntaxErrorException e) {
-            log.error(this.getClass().getName() + "." + "memberSelectCountById" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
-        } finally {
-            if (rs != null) {rs.close();}
-            if (pstmt != null) {pstmt.close();}
-            if (conn != null) {conn.close();}
-        }
-        return -1;
+        return jdbcTemplate.queryForObject(sql, Integer.class, memberId);
     }
 
-    /**
-     * 로그인
-     */
-    public int memberSelectPasswordById(Member member) throws SQLException {
+    public int memberSelectPasswordById(Member member) {
         String sql = "select memberPassword from member where memberId = ?";
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
+        String findPassword = jdbcTemplate.queryForObject(sql, String.class, member.getMemberId());
 
-        try {
-            conn = dataSource.getConnection();
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, member.getMemberId());
-            rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                if (rs.getString("memberPassword").equals(member.getMemberPassword())) {
-                    return 1; // 로그인 성공
-                } else {
-                    return 0; // 비밀번호 불일치
-                }
-            }
-        } catch (Exception e) {
-            log.error(this.getClass().getName() + "." + "memberSelectPasswordById" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
-        } finally {
-            if (rs != null) {rs.close();}
-            if (pstmt != null) {pstmt.close();}
-            if (conn != null) {conn.close();}
+        if (member.getMemberPassword().equals(findPassword)) {
+            return 1; // 로그인 성공
+        } else {
+            return 0; // 로그인 실패
         }
-        return -1; // 아이디 불일치
     }
 
-    /**
-     * 모든 회원을 리스트로 반환
-     */
     public List<Member> memberAllSelect() throws SQLException {
         String sql = "select * from member";
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        List<Member> members = null;
-
-        try {
-            conn = dataSource.getConnection();
-            pstmt = conn.prepareStatement(sql);
-            rs = pstmt.executeQuery();
-
-            members = new ArrayList<>();
-
-            while(rs.next()) {
-                Member member = new Member();
-                member.setMemberIdx(rs.getLong("memberIdx"));
-                member.setMemberImage(rs.getString("memberImage"));
-                member.setMemberId(rs.getString("memberId"));
-                member.setMemberPassword(rs.getString("memberPassword"));
-                member.setMemberGrade(rs.getInt("memberGrade"));
-                members.add(member);
-            }
-        }
-        catch (Exception e) {
-            log.error(this.getClass().getName() + "." + "memberAllSelect" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
-        } finally {
-            if (rs != null) {rs.close();}
-            if (pstmt != null) {pstmt.close();}
-            if (conn != null) {conn.close();}
-        }
+        List<Member> members = jdbcTemplate.query(sql, memberRowMapper());
         return members;
     }
 
-    /**
-     * 특정 회원 정보를 아이디를 통해 조회
-     */
-    public Member memberSelectById(String memberId) throws SQLException {
+    public Member memberSelectById(String memberId) {
         String sql = "select * from member where memberId = ?";
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        Member member = null;
-
-        try {
-            conn = dataSource.getConnection();
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, memberId);
-            rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                member = new Member();
-                member.setMemberIdx(rs.getLong("memberIdx"));
-                member.setMemberImage(rs.getString("memberImage"));
-                member.setMemberId(rs.getString("memberId"));
-                member.setMemberPassword(rs.getString("memberPassword"));
-                member.setMemberGrade(rs.getInt("memberGrade"));
-            }
-        }
-        catch (Exception e) {
-            log.error(this.getClass().getName() + "." + "memberSelectById" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
-        } finally {
-            if (rs != null) {rs.close();}
-            if (pstmt != null) {pstmt.close();}
-            if (conn != null) {conn.close();}
-        }
-        return member;
+        return jdbcTemplate.queryForObject(sql, memberRowMapper(), memberId);
     }
 
-    /**
-     * 특정 회원 정보를 인덱스를 통해 조회
-     */
     public Member memberSelectByIdx(Long memberIdx) throws SQLException {
         String sql = "select * from member where memberIdx = ?";
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        Member member = null;
-
-        try {
-            conn = dataSource.getConnection();
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setLong(1, memberIdx);
-            rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                member = new Member();
-                member.setMemberIdx(rs.getLong("memberIdx"));
-                member.setMemberImage(rs.getString("memberImage"));
-                member.setMemberId(rs.getString("memberId"));
-                member.setMemberPassword(rs.getString("memberPassword"));
-                member.setMemberGrade(rs.getInt("memberGrade"));
-            }
-        }
-        catch (Exception e) {
-            log.error(this.getClass().getName() + "." + "memberSelectByIdx" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
-        } finally {
-            if (rs != null) {rs.close();}
-            if (pstmt != null) {pstmt.close();}
-            if (conn != null) {conn.close();}
-        }
-        return member;
+        return jdbcTemplate.queryForObject(sql, memberRowMapper(), memberIdx);
     }
 
-    /**
-     * 특정 회원 정보를 업데이트
-     */
-    public int memberUpdate(Member member) throws SQLException {
-        String sql = "update member set memberImage = ?, memberId = ?, memberPassword = ?, memberGrade = ? where memberIdx = ?";
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        int result = 0;
-
-        try {
-            conn = dataSource.getConnection();
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, member.getMemberImage());
-            pstmt.setString(2, member.getMemberId());
-            pstmt.setString(3, member.getMemberPassword());
-            pstmt.setInt(4, member.getMemberGrade());
-            pstmt.setLong(5, member.getMemberIdx());
-            result = pstmt.executeUpdate();
-        } catch (Exception e) {
-            log.error(this.getClass().getName() + "." + "memberUpdate" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
-        } finally {
-            if (pstmt != null) {pstmt.close();}
-            if (conn != null) {conn.close();}
-        }
+    public int memberUpdate(Member member) {
+        String sql = "update member set memberImage = ?," +
+                                      " memberId = ?," +
+                                      "  memberPassword = ?," +
+                                      " memberGrade = ?" +
+                                   " where memberIdx = ?";
+        int result = jdbcTemplate.update(sql,
+                                         member.getMemberImage(),
+                                         member.getMemberId(),
+                                         member.getMemberPassword(),
+                                         member.getMemberIdx());
         return result;
     }
 
-    /**
-     * 특정 회원 정보를 회원 인덱스를 통해 삭제
-     */
     public int memberDeleteByIdx(Long memberIdx) throws SQLException {
-        String sql = "update member set memberId = '✕', memberPassword = '✕', memberImage = '✕'" +
-                " where memberIdx = ?";
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        int result = 0;
-
-        try {
-            conn = dataSource.getConnection();
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setLong(1, memberIdx);
-            result = pstmt.executeUpdate();
-        }
-        catch (Exception e) {
-            log.error(this.getClass().getName() + "." + "memberDeleteByIdx" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
-        } finally {
-            if (pstmt != null) {pstmt.close();}
-            if (conn != null) {conn.close();}
-        }
-        return result; // 1일 때 성공
+        String sql = "update member set memberId = '@'," +
+                                      " memberPassword = '@'," +
+                                      " memberImage = '@'" +
+                                   " where memberIdx = ?";
+        int result = jdbcTemplate.update(sql, memberIdx);
+        return result;
     }
 
-    /**
-     * 관리자 인지 아닌지 조회
-     */
     public int memberSelectGradeById(String memberId) throws SQLException {
         String sql = "select memberGrade from member where memberId = ?";
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        int result = 0;
+        return jdbcTemplate.queryForObject(sql, Integer.class, memberId);
+    }
 
-        try {
-            conn = dataSource.getConnection();
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, memberId);
-            rs = pstmt.executeQuery();
-            rs.next();
-            result = rs.getInt("memberGrade");
-        }
-        catch (Exception e) {
-            log.error(this.getClass().getName() + "." + "memberSelectGradeById" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
-        } finally {
-            if (rs != null) {rs.close();}
-            if (pstmt != null) {pstmt.close();}
-            if (conn != null) {conn.close();}
-        }
-        return result;
+    private RowMapper<Member> memberRowMapper() {
+        return (rs, rowNum) -> {
+            Member member = new Member();
+            member.setMemberIdx(rs.getLong("memberIdx"));
+            member.setMemberImage(rs.getString("memberImage"));
+            member.setMemberId(rs.getString("memberId"));
+            member.setMemberId(rs.getString("memberPassword"));
+            member.setMemberGrade(rs.getInt("memberGrade"));
+            return member;
+        };
     }
 }
