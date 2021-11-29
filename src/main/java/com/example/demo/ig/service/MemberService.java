@@ -1,6 +1,7 @@
 package com.example.demo.ig.service;
 
 import com.example.demo.ig.domain.Member;
+import com.example.demo.ig.mapper.MemberMapper;
 import com.example.demo.ig.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import java.util.List;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final MemberMapper memberMapper;
 
     /**
      * 회원가입 서비스
@@ -38,7 +40,8 @@ public class MemberService {
     public void memberIdDuplicateCheck(HttpServletRequest request, HttpServletResponse response) {
         try {
             String memberId = request.getParameter("memberId");
-            int result = memberRepository.memberSelectCountById(memberId);
+//            int result = memberRepository.memberSelectCountById(memberId);
+            int result = memberMapper.memberSelectCountById(memberId);
 
             response.setContentType("text/html;charset=euc-kr");
             PrintWriter out = response.getWriter();
@@ -51,7 +54,7 @@ public class MemberService {
                 out.close();
             }
             out.close();
-        } catch (SQLException | IOException e) {
+        } catch (IOException e) {
             log.error(this.getClass().getName() + "." + "memberIdDuplicateCheck" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         }
     }
