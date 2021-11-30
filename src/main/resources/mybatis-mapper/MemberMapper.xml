@@ -9,4 +9,12 @@
         select count(*) from member where memberId = #{memberId}
     </select>
 
+    <insert id="insertMember">
+        insert into member(memberId, memberPassword) values(#{memberId}, #{memberPassword})
+    </insert>
+
+    <select id="memberSelectPasswordById" resultType="String">
+        select memberPassword from member where memberId = #{memberId}
+    </select>
+
 </mapper>

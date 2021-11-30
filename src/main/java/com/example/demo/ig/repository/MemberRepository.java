@@ -17,16 +17,21 @@ public class MemberRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
+    /*
     public void insertMember(Member member) {
         String sql = "insert into member(memberId, memberPassword) values(?, ?)";
         jdbcTemplate.update(sql, member.getMemberId(), member.getMemberPassword());
     }
+     */
 
+    /*
     public int memberSelectCountById(String memberId) throws SQLException {
         String sql = "select count(*) from member where memberId = ?";
         return jdbcTemplate.queryForObject(sql, Integer.class, memberId);
     }
+     */
 
+    /*
     public int memberSelectPasswordById(Member member) {
         String sql = "select memberPassword from member where memberId = ?";
         String findPassword = jdbcTemplate.queryForObject(sql, String.class, member.getMemberId());
@@ -37,6 +42,7 @@ public class MemberRepository {
             return 0; // 로그인 실패
         }
     }
+     */
 
     public List<Member> memberAllSelect() throws SQLException {
         String sql = "select * from member";

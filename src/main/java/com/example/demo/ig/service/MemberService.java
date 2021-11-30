@@ -30,7 +30,7 @@ public class MemberService {
      * 회원가입 서비스
      */
     public void memberJoin(Member member) {
-        memberRepository.insertMember(member);
+        memberMapper.insertMember(member);
         log.info("{} 님이 회원가입을 하셨습니다.", member.getMemberId());
     }
 
@@ -66,10 +66,9 @@ public class MemberService {
         response.setContentType("text/html;charset=UTF-8");
 
         try {
-            int result = memberRepository.memberSelectPasswordById(member);
+            String findPassword = memberMapper.memberSelectPasswordById(member);
 
-            // 로그인 성공
-            if (result == 1) {
+            if (findPassword.equals(member.getMemberPassword())) {
                 HttpSession session = request.getSession();
                 session.setAttribute("sessionMemberId", member.getMemberId());
 
@@ -77,20 +76,20 @@ public class MemberService {
 
                 PrintWriter out = response.getWriter();
                 out.println("<script>" +
-                        "alert('로그인을 성공했습니다!'); location.href='/main';" +
-                        "</script>");
+                                "alert('로그인을 성공했습니다!');" +
+                                "location.href='/main';" +
+                            "</script>");
                 out.close();
-
-                // 비밀번호 불일치
-            } else if (result == 0) {
+            } else {
                 PrintWriter out = response.getWriter();
                 out.println("<script>" +
-                        "alert('비밀번호가 일치하지 않습니다.'); location.href='/';" +
-                        "</script>");
+                                "alert('비밀번호가 일치하지 않습니다.');" +
+                                "location.href='/';" +
+                            "</script>");
                 out.close();
             }
-        } catch (EmptyResultDataAccessException | IOException e) {
-            log.error(this.getClass().getName() + "." + "memberLogin" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
+        } catch (Exception e) {
+            log.warn(this.getClass().getName() + "." + "memberLogin" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
             PrintWriter out = null;
             try {
                 out = response.getWriter();
@@ -98,8 +97,9 @@ public class MemberService {
                 log.error(this.getClass().getName() + "." + "memberLogin" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
             }
             out.println("<script>" +
-                    "alert('아이디가 일치하지 않습니다.'); location.href='/';" +
-                    "</script>");
+                            "alert('아이디가 일치하지 않습니다.');" +
+                            "location.href='/';" +
+                        "</script>");
         }
     }
 
