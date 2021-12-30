@@ -32,13 +32,13 @@ public class HomeController {
             model.addAttribute("memberId", cookie.getValue());
         }
 
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(false);
 
         // 세션이 있는지 확인
-        if (session.getAttribute("sessionMemberId") != null) {
+        if (session != null && session.getAttribute("sessionMemberId") != null) {
             List<Board> boardList= likeService.LikeBoard(); // ?
             model.addAttribute("boardList", boardList);
-            return "main";
+            return "redirect:/main";
         } else {
             return "login";
         }

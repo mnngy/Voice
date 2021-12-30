@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -37,31 +39,21 @@ public class MemberService {
     /**
      * 아이디 중복 확인 서비스
      */
-    public void memberIdDuplicateCheck(HttpServletRequest request, HttpServletResponse response) {
+    public String memberIdDuplicateCheck(String memberId) {
         try {
-            String memberId = request.getParameter("memberId");
-//            int result = memberRepository.memberSelectCountById(memberId);
-            int result = memberMapper.memberSelectCountById(memberId);
-
-            response.setContentType("text/html;charset=euc-kr");
-            PrintWriter out = response.getWriter();
-
-            if (result == 0) {
-                out.println("0");
-                out.close();
-            } else {
-                out.println("1");
-                out.close();
+            if (memberMapper.memberSelectCountById(memberId) == 0) {
+                return "0"; // 회원가입 가능
             }
-            out.close();
-        } catch (IOException e) {
-            log.error(this.getClass().getName() + "." + "memberIdDuplicateCheck" + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
+        } catch (Exception e) {
+            log.error(this.getClass() + " => " + e.getClass().getName() + ", " + " cause: " + e.getMessage());
         }
+        return "1"; // 회원가입 불가
     }
 
     /**
      * 로그인 서비스
      */
+    // TODO 예외처리 (서버에 데이터베이스가 문제가 있을 때)
     public void memberLogin(HttpServletRequest request, HttpServletResponse response, Member member) {
         response.setContentType("text/html;charset=UTF-8");
 

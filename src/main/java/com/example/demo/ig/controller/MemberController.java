@@ -5,8 +5,7 @@ import com.example.demo.ig.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +14,7 @@ import javax.servlet.http.HttpSession;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
@@ -25,14 +25,15 @@ public class MemberController {
     }
 
     @PostMapping("register")
-    public String registerPost(Member member) {
+    public String registerPost(@ModelAttribute Member member) {
         memberService.memberJoin(member);
-        return "redirect:/";
+        return "redirect:/main";
     }
 
     @PostMapping("memberIdCheckAction")
-    public void memberIdCheckAction(HttpServletRequest request, HttpServletResponse response) {
-        memberService.memberIdDuplicateCheck(request, response);
+    @ResponseBody
+    public String memberIdCheckAction(@RequestParam String memberId) {
+        return memberService.memberIdDuplicateCheck(memberId);
     }
 
     @GetMapping("login")
@@ -41,24 +42,32 @@ public class MemberController {
     }
 
     @PostMapping("login")
-    public void loginPost(HttpServletRequest request, HttpServletResponse response, Member member) {
+    public void loginPost(HttpServletRequest request, HttpServletResponse response,
+                          @ModelAttribute Member member) {
 
-        // 아이디 기억하기 버튼을 눌렀는지
-        if (request.getParameter("memberIdRemember") != null) {
-            if (request.getParameter("memberIdRemember").equals("memberIdCheck")) {
-                Cookie cookie = new Cookie("cookieMemberId", member.getMemberId());
-                cookie.setPath("/");
-                cookie.setMaxAge(60*60*24*30);
-                response.addCookie(cookie);
-            }
-        }
+        String memberIdRemember = request.getParameter("memberIdRemember");
+
+        // 아이디 기억하기 버튼을 눌렀는지 확인
+        memberIdCheck(response, member, memberIdRemember);
+
         memberService.memberLogin(request, response, member);
+    }
+
+    private void memberIdCheck(HttpServletResponse response, Member member, String memberIdRemember) {
+        if (memberIdRemember != null && memberIdRemember.equals("memberIdCheck")) {
+            log.info("아이디 기억하기를 선택했습니다.");
+            Cookie cookie = new Cookie("cookieMemberId", member.getMemberId());
+            response.addCookie(cookie);
+        }
     }
 
     @GetMapping("logout")
     public String logout(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        session.removeAttribute("sessionMemberId");
-        return "login";
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            return "redirect:/";
+        }
+        session.invalidate();
+        return "redirect:/";
     }
 }
